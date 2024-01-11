@@ -49,6 +49,6 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
-            docker stop chat-server
-            docker run -d --rm --name chat-server -p 8080:8080 ${{ secrets.DOCKER_IMAGE_NAME }}
+            sudo docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
+            sudo docker stop chat-server
+            sudo docker run -d --rm --name chat-server -p 8080:8080 ${{ secrets.DOCKER_IMAGE_NAME }}
