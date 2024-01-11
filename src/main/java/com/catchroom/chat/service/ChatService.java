@@ -1,6 +1,7 @@
 package com.catchroom.chat.service;
 
 import com.catchroom.chat.dto.ChatMessageDto;
+import com.catchroom.chat.pubsub.RedisPublisher;
 import com.catchroom.chat.repository.ChatRoomRepository;
 import com.catchroom.chat.type.MessageType;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatService {
 
-    private final ChannelTopic channelTopic;
-    private final RedisTemplate redisTemplate;
+    private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
 
     /**
@@ -41,7 +41,7 @@ public class ChatService {
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
         }
-        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
+        redisPublisher.publish(chatMessage);
     }
 
 }
