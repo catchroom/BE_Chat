@@ -1,6 +1,6 @@
-package com.catchroom.chat.common.config;
+package com.catchroom.chat.global.config;
 
-import com.catchroom.chat.common.handler.StompHandler;
+import com.catchroom.chat.global.handler.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

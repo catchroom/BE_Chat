@@ -1,4 +1,4 @@
-package com.catchroom.chat.common.handler;
+package com.catchroom.chat.global.handler;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.repository.ChatRoomRepository;
 import com.catchroom.chat.message.service.ChatService;

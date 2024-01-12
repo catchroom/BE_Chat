@@ -1,4 +1,4 @@
-package com.catchroom.chat.common.common;
+package com.catchroom.chat.global.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

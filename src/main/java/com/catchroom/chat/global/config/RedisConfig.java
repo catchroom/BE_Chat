@@ -1,7 +1,7 @@
-package com.catchroom.chat.common.config;
+package com.catchroom.chat.global.config;
 
-import com.catchroom.chat.common.config.properties.RedisProperties;
-import com.catchroom.chat.common.pubsub.RedisSubscriber;
+import com.catchroom.chat.global.config.properties.RedisProperties;
+import com.catchroom.chat.global.pubsub.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,7 +2,7 @@ package com.catchroom.chat.chatroom.controller;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomCreateRequest;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
-import com.catchroom.chat.common.common.ApiResponse;
+import com.catchroom.chat.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

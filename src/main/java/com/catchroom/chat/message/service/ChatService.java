@@ -1,7 +1,7 @@
 package com.catchroom.chat.message.service;
 
 import com.catchroom.chat.message.dto.ChatMessageDto;
-import com.catchroom.chat.common.pubsub.RedisPublisher;
+import com.catchroom.chat.global.pubsub.RedisPublisher;
 import com.catchroom.chat.message.repository.ChatRoomRepository;
 import com.catchroom.chat.message.type.MessageType;
 import lombok.RequiredArgsConstructor;

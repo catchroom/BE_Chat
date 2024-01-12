@@ -1,4 +1,4 @@
-package com.catchroom.chat.common.pubsub;
+package com.catchroom.chat.global.pubsub;
 
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;

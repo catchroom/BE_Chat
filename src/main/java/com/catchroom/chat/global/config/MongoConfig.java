@@ -1,6 +1,6 @@
-package com.catchroom.chat.common.config;
+package com.catchroom.chat.global.config;
 
-import com.catchroom.chat.common.config.properties.MongoProperties;
+import com.catchroom.chat.global.config.properties.MongoProperties;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.RequiredArgsConstructor;
