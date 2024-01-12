@@ -12,6 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:8080")
                 .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://13.124.240.142:8080")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "MESSAGE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
