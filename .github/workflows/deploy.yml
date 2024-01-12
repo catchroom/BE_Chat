@@ -1,36 +1,54 @@
-# This is a basic workflow to help you get started with Actions
+# github repository actions 페이지에 나타날 이름
+name: CI/CD using github actions & docker
 
-name: CI
-
-# Controls when the workflow will run
+# event trigger
+# main 브랜치에 push가 되었을 때 실행
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+permissions:
+  contents: read
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
+
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Create application.yml
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
+          cat ./src/main/resources/application.yml
+
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Docker build
+        run: |
+          docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PWD }}
+          docker buildx build --push --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGE_NAME }} .
+#          docker build -t ${{ secrets.DOCKER_IMAGE_NAME }} .
+#          docker push ${{ secrets.DOCKER_IMAGE_NAME }}
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
+            sudo docker stop chat-server
+            sudo docker run -d --rm --name chat-server -p 8080:8080 ${{ secrets.DOCKER_IMAGE_NAME }}
