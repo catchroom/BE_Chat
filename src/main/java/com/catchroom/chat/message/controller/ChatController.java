@@ -8,10 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RequiredArgsConstructor
 @Controller
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 public class ChatController {
 
     private final ChatRoomRepository chatRoomRepository;

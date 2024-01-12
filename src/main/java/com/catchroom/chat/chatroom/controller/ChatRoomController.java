@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/chat/room")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     @GetMapping("/{userId}")
