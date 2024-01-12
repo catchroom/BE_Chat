@@ -30,13 +30,11 @@ tasks.named('test') {
 }
 
 
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
     implementation 'org.springframework.boot:spring-boot-devtools'
-    implementation 'com.mysql:mysql-connector-j'
 
     //aws secretkey 사용을 위한 의존성 추가
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.3'
@@ -48,6 +46,10 @@ dependencies {
 
     //mongo
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    //mysql
+    implementation 'mysql:mysql-connector-java:8.0.32'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
 
     implementation 'org.webjars.bower:bootstrap:4.3.1'
