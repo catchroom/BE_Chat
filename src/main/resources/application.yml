@@ -1,0 +1,45 @@
+spring:
+
+  datasource:
+    url: jdbc-secretsmanager:mysql://catchroomdb.c1aeg6a0abt3.ap-northeast-2.rds.amazonaws.com:3306/catchroomdb
+    username: catchroom-secret-manager
+    driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  database:
+    enabled: true
+  level: ERROR
+
+
+  #  devtools:
+  #    livereload:
+  #      enabled: true
+  #    restart:
+  #      enabled: false
+  #  freemarker:
+  #    cache: false
+  #    template-loader-path: classpath:/templates/
+  #    suffix: .ftl
+  #  profiles:
+  #    active: local
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+#    redis:
+#      host: redis-chat.q1iy3x.ng.0001.apn2.cache.amazonaws.com
+#      port: 6379
+
+    mongodb:
+      uri : mongodb+srv://admin:seaHrNQdYAAyRrbe@catchroom.uvmwqww.mongodb.net
+      username: admin
+      password: seaHrNQdYAAyRrbe
+      database: catchroom
+
+#  config:
+#    activate:
+#      on-profile: local
