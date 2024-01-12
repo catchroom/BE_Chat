@@ -54,7 +54,6 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.32'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-
     implementation 'org.webjars.bower:bootstrap:4.3.1'
     implementation 'org.webjars.bower:vue:2.5.16'
     implementation 'org.webjars.bower:axios:0.17.1'
