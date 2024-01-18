@@ -26,9 +26,9 @@ public class ChatController {
     @MessageMapping("/chat/message")
     public void message(ChatMessageDto message) {
         log.info("chatController Sender: {}", message.getSender());
-        chatMongoService.save(message);
-        message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));
-        chatService.sendChatMessage(message);
+        ChatMessageDto chatMessageDto = chatMongoService.save(message);
+        message.setUserCount(chatRoomRepository.getUserCount(chatMessageDto.getRoomId()));
+        chatService.sendChatMessage(chatMessageDto);
 
     }
 

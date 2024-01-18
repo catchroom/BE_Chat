@@ -14,9 +14,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "chat")
 public class ChatMessage {
 
-//    @Id
-//    private Long id;
-
     private MessageType type; // 메시지 타입
     private String roomId; // 방 번호
     private String sender; // 채팅을 보낸 사람
