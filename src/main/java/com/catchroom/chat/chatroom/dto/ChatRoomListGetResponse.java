@@ -1,25 +1,20 @@
 package com.catchroom.chat.chatroom.dto;
 
-import com.catchroom.chat.chatroom.entity.ChatRoom;
+import com.catchroom.chat.message.type.UserIdentity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoomListGetResponse {
-    private List<ChatRoom> ChatRoomListUserIsBuyer;
-    private List<ChatRoom> ChatRoomListUserIsSeller;
+    private String chatRoomNumber;
+    private Long buyerId;
+    private Long sellerId;
+    private Long productId;
+    private UserIdentity loginUserIdentity;
 
-    public static ChatRoomListGetResponse of(List<ChatRoom> ChatRoomListUserIsBuyer, List<ChatRoom> ChatRoomListUserIsSeller) {
-        return ChatRoomListGetResponse.builder()
-            .ChatRoomListUserIsBuyer(ChatRoomListUserIsBuyer)
-            .ChatRoomListUserIsSeller(ChatRoomListUserIsSeller)
-            .build();
-    }
 }
