@@ -1,4 +1,4 @@
-package com.catchroom.chat.message.feign;
+package com.catchroom.chat.feign.client;
 
 import com.catchroom.chat.global.config.FeignConfig;
 import com.catchroom.chat.message.dto.AccommodationResponse;

@@ -1,7 +1,7 @@
-package com.catchroom.chat.message.service;
+package com.catchroom.chat.feign.service;
 
+import com.catchroom.chat.feign.client.MainFeignClient;
 import com.catchroom.chat.message.dto.AccommodationResponse;
-import com.catchroom.chat.message.feign.MainFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
