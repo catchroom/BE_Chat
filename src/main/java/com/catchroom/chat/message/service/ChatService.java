@@ -4,6 +4,7 @@ import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.global.pubsub.RedisPublisher;
 import com.catchroom.chat.message.repository.ChatRoomRepository;
 import com.catchroom.chat.message.type.MessageType;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,8 @@ public class ChatService {
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
         }
+
+        chatMessage.setTime(String.valueOf(LocalDateTime.now()));
         redisPublisher.publish(chatMessage);
     }
 
