@@ -41,7 +41,6 @@ public class ChatService {
             chatMessage.setSender("[알림]");
         }
 
-        chatMessage.setTime(String.valueOf(LocalDateTime.now()));
         redisPublisher.publish(chatMessage);
     }
 
