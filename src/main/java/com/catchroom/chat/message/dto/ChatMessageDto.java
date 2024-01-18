@@ -23,6 +23,7 @@ public class ChatMessageDto {
     private String message; // 메시지
     private String time;
     private long userCount; // 채팅방 인원 수
+    private int negoPrice; //네고 가격
 
     public static ChatMessageDto fromEntity(ChatMessage chatMessage) {
         return ChatMessageDto.builder()
@@ -31,6 +32,7 @@ public class ChatMessageDto {
                 .roomId(chatMessage.getRoomId())
                 .time(chatMessage.getTime())
                 .message(chatMessage.getMessage())
+                .negoPrice(chatMessage.getNegoPrice())
                 .build();
     }
 

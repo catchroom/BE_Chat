@@ -3,6 +3,7 @@ package com.catchroom.chat.message.service;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.repository.ChatMessageRepository;
+import com.catchroom.chat.message.type.MessageType;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,11 @@ public class ChatMongoService {
     // 채팅 저장
     @Transactional
     public ChatMessageDto save(ChatMessageDto chatMessageDto) {
+        if (chatMessageDto.getType() == MessageType.ENTER ||
+            chatMessageDto.getType() == MessageType.TALK ||
+            chatMessageDto.getType() == MessageType.QUIT) {
+            chatMessageDto.setNegoPrice(-1);
+        }
         ChatMessage chatMessage = chatMessageRepository.save(ChatMessage.of(chatMessageDto));
         log.info("save success : {}", chatMessage.getMessage());
         return ChatMessageDto.fromEntity(chatMessage);
