@@ -15,12 +15,6 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * 기존에는 신규 채팅방 생성 시 무조건 새로운 ChannelTopic을 생성하고 새로운 redisListener와 연동하여 작업.
- * 그러나 이방법은 불필요하게 자원을 낭비하는 단점이 존재함.
- * 그래서 ChannelTopic 과 redisListener 일원화 작업 진행으로 변경.
- * redisPublisher 삭제 => redisTemplate 대체
- */
 
 @RequiredArgsConstructor
 @Configuration

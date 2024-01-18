@@ -19,9 +19,10 @@ public class ChatMongoService {
 
     // 채팅 저장
     @Transactional
-    public void save(ChatMessageDto chatMessageDto) {
+    public ChatMessageDto save(ChatMessageDto chatMessageDto) {
         ChatMessage chatMessage = chatMessageRepository.save(ChatMessage.of(chatMessageDto));
         log.info("save success : {}", chatMessage.getMessage());
+        return ChatMessageDto.fromEntity(chatMessage);
     }
 
     // 채팅 불러오기
