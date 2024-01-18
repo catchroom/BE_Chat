@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @SpringBootApplication
 public class ChatApplication {
-    // Bean 생명주기를 이용한 timezone 설정
+
     @PostConstruct
     public void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
