@@ -19,6 +19,7 @@ public class ChatMessage {
     private String sender; // 채팅을 보낸 사람
     private String message; // 메시지
     private String time; // 메시지 보낸 시간
+    private int negoPrice;
 
     public static ChatMessage of(ChatMessageDto dto) {
         return ChatMessage.builder()
@@ -27,6 +28,7 @@ public class ChatMessage {
                 .sender(dto.getSender())
                 .message(dto.getMessage())
                 .time(LocalDateTime.now().toString())
+                .negoPrice(dto.getNegoPrice())
                 .build();
     }
 }
