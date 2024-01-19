@@ -27,7 +27,7 @@ public class ChatController {
     public void message(ChatMessageDto message,
                         @RequestHeader("Authorization") String accessToken
     ) {
-        log.info("chatController Sender: {}", message.getSender());
+        log.error("ChatController Token {}", accessToken);
         ChatMessageDto chatMessageDto = chatMongoService.save(message);
         chatService.sendChatMessage(chatMessageDto, accessToken);
     }
