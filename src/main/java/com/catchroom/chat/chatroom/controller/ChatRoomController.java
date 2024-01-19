@@ -11,7 +11,6 @@ import java.util.List;
 @RequestMapping("/v1/chat/room")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*")
-@Slf4j
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
@@ -19,7 +18,6 @@ public class ChatRoomController {
     public List<ChatRoomListGetResponse> getChatRoomList(
         @RequestHeader("Authorization") String accessToken
         ) {
-        log.error("accesstoken = " + accessToken);
         return chatRoomService.getChatRoomList(accessToken);
     }
 
