@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 public class ChatController {
 
-    private final ChatRoomRepository chatRoomRepository;
     private final ChatMongoService chatMongoService;
     private final ChatService chatService;
 
@@ -27,9 +26,7 @@ public class ChatController {
     public void message(ChatMessageDto message) {
         log.info("chatController Sender: {}", message.getSender());
         ChatMessageDto chatMessageDto = chatMongoService.save(message);
-        message.setUserCount(chatRoomRepository.getUserCount(chatMessageDto.getRoomId()));
         chatService.sendChatMessage(chatMessageDto);
-
     }
 
     /**
