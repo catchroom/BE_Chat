@@ -22,4 +22,8 @@ public class ChatRoomListGetResponse {
     private String accommodationUrl;
     private String partnerNickName;
     private ChatMessageDto chatMessageDto;
+
+    public void updateChatMessageDto(ChatMessageDto chatMessageDto) {
+        this.chatMessageDto = chatMessageDto;
+    }
 }

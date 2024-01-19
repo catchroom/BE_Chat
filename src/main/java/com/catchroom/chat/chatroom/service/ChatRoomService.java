@@ -5,7 +5,6 @@ import com.catchroom.chat.feign.client.MainFeignClient;
 import com.catchroom.chat.message.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -15,7 +14,10 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     public List<ChatRoomListGetResponse> getChatRoomList(String accessToken) {
-
-        return mainFeignClient.getChatRoomList(accessToken);
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
+        for (ChatRoomListGetResponse chatRoomListGetResponse : chatRoomListGetResponseList) {
+            chatRoomListGetResponse.updateChatMessageDto(chatRoomRepository.getLastMessage(chatRoomListGetResponse.getChatRoomNumber()));
+        }
+        return chatRoomListGetResponseList;
     }
 }
