@@ -1,4 +1,4 @@
-package com.catchroom.chat.message.feign;
+package com.catchroom.chat.feign.client;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.global.config.FeignConfig;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  */
 @FeignClient(
-        name = "mainFeign", url = "https://catchroom.xyz/v1",
+        name = "mainFeign", url = "http://localhost:8081/v1",
         configuration = FeignConfig.class
 )
 public interface MainFeignClient {
@@ -25,6 +25,6 @@ public interface MainFeignClient {
     @RequestMapping(method = RequestMethod.GET, value = "/accommodation/{accommodationId}")
     AccommodationResponse getAccommodationDto(@PathVariable Long accommodationId);
 
-    @GetMapping(value = "/chat/room/list")
+    @RequestMapping(method = RequestMethod.GET, value = "/chat/room/list", headers = "Authorization=Bearer eyJhbGciOiJIUzUxMiJ9.eyJuYW1lIjoiaHllbWluIiwicGhvbmVOdW1iZXIiOiIwMTAtMTExMS0xMTExIiwibmlja05hbWUiOiJoeWVtaW4iLCJlbWFpbCI6Imh5ZW01MDE5QGVtYWlsLmNvbSIsImlzcyI6ImNhdGNocm9vbSIsImlhdCI6MTcwNTY0MzE0MSwiZXhwIjoxNzA1NjQzMTcwfQ.rpphjhohHOsvlKkEqDCghHbCb1RfQJK639bviChufKK8mA7dXYnTUpS1BvWMEMLVYYkdKgwImA_myMIbkFxSAA")
     ChatRoomListGetResponse getChatRoomList();
 }
