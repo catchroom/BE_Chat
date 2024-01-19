@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 채팅 서버 입장 (시큐리티 X)
@@ -29,5 +30,11 @@ public interface MainFeignClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/chat/room/list/chat")
     List<ChatRoomListGetResponse> getChatRoomList(@RequestHeader("Authorization") String accessToken);
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/chat/room")
+    String deleteChatRoom(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(name = "roomId") String roomId
+    );
 
 }
