@@ -26,23 +26,12 @@ public class StompHandler implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        log.info("StompHandler : {}, command : {}", message.getPayload(), accessor.getCommand());
-        if (StompCommand.CONNECT == accessor.getCommand()) {
-            // websocket 연결요청
-            /** JWT token 존재 x */
-
-//            String jwtToken = accessor.getFirstNativeHeader("token");
-//            log.info("CONNECT {}", jwtToken);
-//            // Header의 jwt token 검증
-//            jwtTokenProvider.validateToken(jwtToken);
-
-        } else if (StompCommand.SEND == accessor.getCommand()) {
-
-        } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) { // 채팅룸 구독요청
+        if (StompCommand.SUBSCRIBE == accessor.getCommand()) { // 채팅룸 구독요청
 
             // header 정보에서 구독 destination 정보를 얻고, roomId를 추출한다. destination = uri
             String roomId = chatService.getRoomId(
-                    Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId")
+                    Optional.ofNullable((String) message.getHeaders().get("simpDestination"))
+                            .orElse("InvalidRoomId")
             );
 
             // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
