@@ -3,7 +3,7 @@ package com.catchroom.chat.chatroom.service;
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.chatroom.entity.ChatRoom;
 import com.catchroom.chat.chatroom.repository.ChatRoomRepositoryJPA;
-import com.catchroom.chat.message.feign.MainFeignClient;
+import com.catchroom.chat.feign.client.MainFeignClient;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
