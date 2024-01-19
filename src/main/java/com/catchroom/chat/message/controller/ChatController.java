@@ -24,8 +24,8 @@ public class ChatController {
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
      */
     @MessageMapping("/chat/message")
-    public void message(ChatMessageDto message,
-                        @RequestHeader("Authorization") String accessToken
+    public void message(@RequestHeader("Authorization") String accessToken,
+                        ChatMessageDto message
     ) {
         log.error("ChatController Token {}", accessToken);
         ChatMessageDto chatMessageDto = chatMongoService.save(message);
