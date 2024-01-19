@@ -1,15 +1,14 @@
 package com.catchroom.chat.message.controller;
 
 import com.catchroom.chat.message.dto.ChatMessageDto;
-import com.catchroom.chat.message.repository.ChatRoomRepository;
 import com.catchroom.chat.message.service.ChatMongoService;
 import com.catchroom.chat.message.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,7 +24,7 @@ public class ChatController {
      */
     @MessageMapping("/chat/message")
     public void message(ChatMessageDto message,
-                        @RequestHeader("Authorization") String accessToken
+                        @Header("Authorization") String accessToken
     ) {
         log.error("ChatController Token {}", accessToken);
         ChatMessageDto chatMessageDto = chatMongoService.save(message);
