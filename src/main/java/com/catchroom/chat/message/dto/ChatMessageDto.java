@@ -2,6 +2,7 @@ package com.catchroom.chat.message.dto;
 
 import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.type.MessageType;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatMessageDto {
+public class ChatMessageDto implements Serializable {
     // 메시지  타입 : 입장, 채팅, 퇴장
 
     private MessageType type; // 메시지 타입
