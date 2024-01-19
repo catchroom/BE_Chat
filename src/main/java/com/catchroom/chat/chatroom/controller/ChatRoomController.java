@@ -2,11 +2,9 @@ package com.catchroom.chat.chatroom.controller;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -16,13 +14,13 @@ import java.util.List;
 @Slf4j
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
-//    private final TokenService tokenService;
 
-    //TODO 토큰 헤더에 담을 것
     @GetMapping("/list")
     public List<ChatRoomListGetResponse> getChatRoomList(
         @RequestHeader("Authorization") String accessToken
         ) {
         return chatRoomService.getChatRoomList(accessToken);
     }
+
+
 }

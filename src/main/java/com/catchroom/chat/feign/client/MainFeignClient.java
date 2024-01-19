@@ -2,11 +2,12 @@ package com.catchroom.chat.feign.client;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.global.config.FeignConfig;
-import com.catchroom.chat.message.dto.AccommodationResponse;
-import org.springframework.beans.factory.annotation.Value;
+import com.catchroom.chat.feign.dto.AccommodationResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 

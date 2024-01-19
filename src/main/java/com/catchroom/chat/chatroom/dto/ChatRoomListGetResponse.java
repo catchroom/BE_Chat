@@ -1,11 +1,13 @@
 package com.catchroom.chat.chatroom.dto;
 
-import com.catchroom.chat.chatroom.entity.ChatRoom;
+import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.type.UserIdentity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Builder
 @Getter
@@ -19,4 +21,5 @@ public class ChatRoomListGetResponse {
     private UserIdentity loginUserIdentity;
     private String accommodationUrl;
     private String partnerNickName;
+    private ChatMessageDto chatMessageDto;
 }
