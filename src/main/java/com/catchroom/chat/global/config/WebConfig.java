@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:8080")
                 .allowedOrigins("http://localhost:3000")
                 .allowedOrigins("https://localhost:3000")
-                 .allowedOrigins("https://dev.dhlbrqe2v28e4.amplifyapp.com")
+                .allowedOrigins("https://dev.dhlbrqe2v28e4.amplifyapp.com")
                 .allowedOrigins("http://13.124.240.142:8080")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "MESSAGE")
                 .allowedHeaders("*")
