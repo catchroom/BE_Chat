@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RequiredArgsConstructor
 @Controller
@@ -23,10 +24,12 @@ public class ChatController {
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
      */
     @MessageMapping("/chat/message")
-    public void message(ChatMessageDto message) {
+    public void message(ChatMessageDto message,
+                        @RequestHeader("Authorization") String accessToken
+    ) {
         log.info("chatController Sender: {}", message.getSender());
         ChatMessageDto chatMessageDto = chatMongoService.save(message);
-        chatService.sendChatMessage(chatMessageDto);
+        chatService.sendChatMessage(chatMessageDto, accessToken);
     }
 
     /**

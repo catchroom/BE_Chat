@@ -51,11 +51,11 @@ public class StompHandler implements ChannelInterceptor {
             String name = chatRoomRepository.getUserInfoBySessionId(sessionId);
 
             // 채팅방의 인원수를 -1한다.
-            chatRoomRepository.minusUserCount(roomId);
-
-            chatService.sendChatMessage(
-                    ChatMessageDto.builder().type(MessageType.QUIT).roomId(roomId).sender(name).build()
-            );
+//            chatRoomRepository.minusUserCount(roomId);
+//
+//            chatService.sendChatMessage(
+//                    ChatMessageDto.builder().type(MessageType.QUIT).roomId(roomId).sender(name).build()
+//            );
 
             // 퇴장한 클라이언트의 roomId 맵핑 정보를 삭제한다.
             chatRoomRepository.removeUserEnterInfo(sessionId);
