@@ -1,5 +1,6 @@
 package com.catchroom.chat.chatroom.entity;
 
+import com.catchroom.chat.message.type.UserIdentity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,6 @@ public class ChatRoom implements Serializable {
     private Long productId;
     private String chatRoomNumber;
     @Transient
-    private Boolean is_buyer;
+    private UserIdentity loginUserIdentity;
 
 }

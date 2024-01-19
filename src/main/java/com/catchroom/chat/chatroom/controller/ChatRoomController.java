@@ -2,22 +2,27 @@ package com.catchroom.chat.chatroom.controller;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
-import com.catchroom.chat.global.common.ApiResponse;
-import com.catchroom.chat.message.dto.AccommodationResponse;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/chat/room")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+@Slf4j
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
+//    private final TokenService tokenService;
 
     //TODO 토큰 헤더에 담을 것
     @GetMapping("/list")
-    public ChatRoomListGetResponse getChatRoomList() {
-        return chatRoomService.getChatRoomList();
+    public List<ChatRoomListGetResponse> getChatRoomList(
+        @RequestHeader("Authorization") String accessToken
+        ) {
+        return chatRoomService.getChatRoomList(accessToken);
     }
 }

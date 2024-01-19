@@ -1,5 +1,6 @@
 package com.catchroom.chat.chatroom.dto;
 
+import com.catchroom.chat.chatroom.entity.ChatRoom;
 import com.catchroom.chat.message.type.UserIdentity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +17,6 @@ public class ChatRoomListGetResponse {
     private Long sellerId;
     private Long productId;
     private UserIdentity loginUserIdentity;
-
+    private String accommodationUrl;
+    private String partnerNickName;
 }
