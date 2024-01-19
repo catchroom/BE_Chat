@@ -3,14 +3,12 @@ package com.catchroom.chat.feign.controller;
 import com.catchroom.chat.feign.service.MainFeignService;
 import com.catchroom.chat.feign.dto.AccommodationResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1")
 @RestController
+@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*")
 public class MainFeignController {
     private final MainFeignService mainFeignService;
     @GetMapping("/accommodation/{accommodationId}")

@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/chat/room")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*")
 @Slf4j
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
