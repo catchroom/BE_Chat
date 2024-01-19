@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @RequiredArgsConstructor
 @Controller
 @Slf4j
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*")
 public class ChatController {
 
     private final ChatMongoService chatMongoService;
