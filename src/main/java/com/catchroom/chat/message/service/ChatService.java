@@ -48,7 +48,7 @@ public class ChatService {
             .list(chatRoomListGetResponseList)
             .build();
 
-        redisPublisher.publish(chatMessage);
+        redisPublisher.publish(messageSubDto);
     }
 
 }
