@@ -1,11 +1,15 @@
 package com.catchroom.chat.global.pubsub;
 
+import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
+import com.catchroom.chat.message.dto.MessageSubDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,7 +28,8 @@ public class RedisSubscriber {
             log.info("Redis Subcriber publishMsg: {}", publishMessage);
 
             // ChatMessage 객채로 맵핑
-            ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, ChatMessageDto.class);
+//            ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, ChatMessageDto.class);
+            ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
             messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
@@ -33,13 +38,18 @@ public class RedisSubscriber {
         }
     }
 
-    public void sendRoomList(String message) {
+    public void sendRoomList(String publishMessage) {
         try {
-            log.info("Redis Subcriber  room publishMsg: {}", message);
-            // ChatMessage 객채로 맵핑
-            ChatMessageDto chatMessage = objectMapper.readValue(message, ChatMessageDto.class);
+            log.info("Redis Subcriber  room publishMsg: {}", publishMessage);
+
+
+            ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
+            List<ChatRoomListGetResponse> chatRoomListGetResponseList = objectMapper.readValue(publishMessage, MessageSubDto.class)
+                .getList();
+
+
             // 채팅방을 구독한 클라이언트에게 메시지 발송
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getUserId(), chatMessage);
+            messagingTemplate.convertAndSend("/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList);
         } catch (Exception e) {
             log.error("Exception {}", e);
         }
