@@ -6,6 +6,7 @@ import com.catchroom.chat.message.service.ChatMongoService;
 import com.catchroom.chat.message.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,7 +26,7 @@ public class ChatController {
      */
     @MessageMapping("/chat/message")
     public void message(ChatMessageDto message,
-                        @RequestHeader("Authorization") String accessToken
+                        @Header("Authorization") String accessToken
     ) {
         log.info("chatController Sender: {}", message.getSender());
         ChatMessageDto chatMessageDto = chatMongoService.save(message);
