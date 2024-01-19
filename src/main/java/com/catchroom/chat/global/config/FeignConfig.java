@@ -12,4 +12,9 @@ public class FeignConfig {
         return Logger.Level.FULL;
     }
 
+//    @Bean
+//    public AuthRequestInterceptor feignInterceptor() {
+//        return new AuthRequestInterceptor();
+//    }
+
 }
