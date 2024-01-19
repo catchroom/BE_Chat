@@ -1,7 +1,7 @@
-package com.catchroom.chat.message.controller;
+package com.catchroom.chat.feign.controller;
 
+import com.catchroom.chat.feign.service.MainFeignService;
 import com.catchroom.chat.message.dto.AccommodationResponse;
-import com.catchroom.chat.message.service.MainFeignService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -32,14 +32,14 @@ public class ChatService {
     public void sendChatMessage(ChatMessageDto chatMessage) {
         chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
 
-        if (MessageType.ENTER.equals(chatMessage.getType())) {
-            chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
-            chatMessage.setSender("[알림]");
-
-        } else if (MessageType.QUIT.equals(chatMessage.getType())) {
-            chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
-            chatMessage.setSender("[알림]");
-        }
+//        if (MessageType.ENTER.equals(chatMessage.getType())) {
+//            chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
+//            chatMessage.setSender("[알림]");
+//
+//        } else if (MessageType.QUIT.equals(chatMessage.getType())) {
+//            chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
+//            chatMessage.setSender("[알림]");
+//        }
 
         redisPublisher.publish(chatMessage);
     }

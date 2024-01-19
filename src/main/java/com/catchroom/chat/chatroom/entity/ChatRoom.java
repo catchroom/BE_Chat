@@ -1,9 +1,6 @@
 package com.catchroom.chat.chatroom.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,18 +23,7 @@ public class ChatRoom implements Serializable {
     private Long buyerId;
     private Long productId;
     private String chatRoomNumber;
-
-    public ChatRoom(Long sellerId, Long buyerId, Long productId, String chatRoomNumber) {
-        this.sellerId = sellerId;
-        this.buyerId = buyerId;
-        this.productId = productId;
-        this.chatRoomNumber = chatRoomNumber;
-    }
-
-    public static ChatRoom create(Long sellerId, Long buyerId, Long productId) {
-        String chatRoomNumber = UUID.randomUUID().toString();
-        ChatRoom chatRoom = new ChatRoom(sellerId,buyerId,productId,chatRoomNumber);
-        return chatRoom;
-    }
+    @Transient
+    private Boolean is_buyer;
 
 }
