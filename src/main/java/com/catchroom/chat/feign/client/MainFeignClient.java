@@ -19,7 +19,7 @@ import java.util.List;
  *
  */
 @FeignClient(
-        name = "mainFeign", url = "http://localhost:8081/v1",
+        name = "mainFeign", url = "https://catchroom.xyz/v1",
         configuration = FeignConfig.class
 )
 public interface MainFeignClient {
