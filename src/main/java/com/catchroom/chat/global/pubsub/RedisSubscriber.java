@@ -48,8 +48,17 @@ public class RedisSubscriber {
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
             List<ChatRoomListGetResponse> chatRoomListGetResponseList = objectMapper.readValue(publishMessage, MessageSubDto.class)
                 .getList();
-
-            Collections.sort(chatRoomListGetResponseList, new ChatRoomListGetResponseComparator());
+            Comparator<ChatRoomListGetResponse> comparator = new Comparator<ChatRoomListGetResponse>() {
+                @Override
+                public int compare(ChatRoomListGetResponse o1, ChatRoomListGetResponse o2) {
+                    if (o1.getChatMessageDto() != null && o2.getChatMessageDto() != null) {
+                        return LocalDateTime.parse(o1.getChatMessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o2.getChatMessageDto().getTime()).withNano(0));
+                    } else {
+                        return 0;
+                    }
+                }
+            };
+            Collections.sort(chatRoomListGetResponseList,comparator);
             // 로그인 유저 채팅방 리스트 최신화
             messagingTemplate.convertAndSend("/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList);
         } catch (Exception e) {
@@ -57,14 +66,5 @@ public class RedisSubscriber {
         }
     }
 
-}
-
-class ChatRoomListGetResponseComparator implements Comparator<ChatRoomListGetResponse> {
-    @Override
-    public int compare(ChatRoomListGetResponse response1, ChatRoomListGetResponse response2) {
-        LocalDateTime time1 = LocalDateTime.parse(response1.getChatMessageDto().getTime());
-        LocalDateTime time2 = LocalDateTime.parse(response2.getChatMessageDto().getTime());
-        return time1.compareTo(time2);
-    }
 }
 
