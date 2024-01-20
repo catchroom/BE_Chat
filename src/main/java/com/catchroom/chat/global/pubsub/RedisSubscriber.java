@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -42,17 +45,26 @@ public class RedisSubscriber {
         try {
             log.info("Redis Subcriber  room publishMsg: {}", publishMessage);
 
-
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
             List<ChatRoomListGetResponse> chatRoomListGetResponseList = objectMapper.readValue(publishMessage, MessageSubDto.class)
                 .getList();
 
-
-            // 채팅방을 구독한 클라이언트에게 메시지 발송
+            Collections.sort(chatRoomListGetResponseList, new ChatRoomListGetResponseComparator());
+            // 로그인 유저 채팅방 리스트 최신화
             messagingTemplate.convertAndSend("/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList);
         } catch (Exception e) {
             log.error("Exception {}", e);
         }
+    }
+
+}
+
+class ChatRoomListGetResponseComparator implements Comparator<ChatRoomListGetResponse> {
+    @Override
+    public int compare(ChatRoomListGetResponse response1, ChatRoomListGetResponse response2) {
+        LocalDateTime time1 = LocalDateTime.parse(response1.getChatMessageDto().getTime());
+        LocalDateTime time2 = LocalDateTime.parse(response2.getChatMessageDto().getTime());
+        return time1.compareTo(time2);
     }
 }
 
