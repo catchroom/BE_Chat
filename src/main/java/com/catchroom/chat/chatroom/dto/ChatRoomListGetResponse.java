@@ -19,9 +19,9 @@ public class ChatRoomListGetResponse {
     private UserIdentity loginUserIdentity;
     private String accommodationUrl;
     private String partnerNickName;
-    private ChatMessageDto chatMessageDto;
+    private ChatMessageDto lastChatmessageDto;
 
     public void updateChatMessageDto(ChatMessageDto chatMessageDto) {
-        this.chatMessageDto = chatMessageDto;
+        this.lastChatmessageDto = chatMessageDto;
     }
 }

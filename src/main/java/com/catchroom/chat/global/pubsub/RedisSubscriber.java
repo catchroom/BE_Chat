@@ -46,22 +46,26 @@ public class RedisSubscriber {
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
             List<ChatRoomListGetResponse> chatRoomListGetResponseList = objectMapper.readValue(publishMessage, MessageSubDto.class)
                 .getList();
-            Comparator<ChatRoomListGetResponse> comparator = new Comparator<ChatRoomListGetResponse>() {
-                @Override
-                public int compare(ChatRoomListGetResponse o1, ChatRoomListGetResponse o2) {
-                    if (o1.getChatMessageDto() != null && o2.getChatMessageDto() != null) {
-                        return LocalDateTime.parse(o2.getChatMessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o1.getChatMessageDto().getTime()).withNano(0));
-                    } else {
-                        return 0;
-                    }
-                }
-            };
-            Collections.sort(chatRoomListGetResponseList,comparator);
+            sortChatRoomListLatest(chatRoomListGetResponseList);
             // 로그인 유저 채팅방 리스트 최신화
             messagingTemplate.convertAndSend("/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList);
         } catch (Exception e) {
             log.error("Exception {}", e);
         }
+    }
+
+    private void sortChatRoomListLatest(List<ChatRoomListGetResponse> chatRoomListGetResponseList) {
+        Comparator<ChatRoomListGetResponse> comparator = new Comparator<ChatRoomListGetResponse>() {
+            @Override
+            public int compare(ChatRoomListGetResponse o1, ChatRoomListGetResponse o2) {
+                if (o1.getLastChatmessageDto() != null && o2.getLastChatmessageDto() != null) {
+                    return LocalDateTime.parse(o2.getLastChatmessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o1.getLastChatmessageDto().getTime()).withNano(0));
+                } else {
+                    return 0;
+                }
+            }
+        };
+        Collections.sort(chatRoomListGetResponseList,comparator);
     }
 
 }
