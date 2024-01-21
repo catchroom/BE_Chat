@@ -30,8 +30,6 @@ public class RedisSubscriber {
         try {
             log.info("Redis Subcriber publishMsg: {}", publishMessage);
 
-            // ChatMessage 객채로 맵핑
-//            ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, ChatMessageDto.class);
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
@@ -52,7 +50,7 @@ public class RedisSubscriber {
                 @Override
                 public int compare(ChatRoomListGetResponse o1, ChatRoomListGetResponse o2) {
                     if (o1.getChatMessageDto() != null && o2.getChatMessageDto() != null) {
-                        return LocalDateTime.parse(o1.getChatMessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o2.getChatMessageDto().getTime()).withNano(0));
+                        return LocalDateTime.parse(o2.getChatMessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o1.getChatMessageDto().getTime()).withNano(0));
                     } else {
                         return 0;
                     }
