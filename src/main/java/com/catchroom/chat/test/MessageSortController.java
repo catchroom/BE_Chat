@@ -2,10 +2,8 @@ package com.catchroom.chat.test;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
-import com.catchroom.chat.feign.service.MainFeignService;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.dto.MessageSubDto;
-import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.type.MessageType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -39,9 +36,6 @@ public class MessageSortController {
         chatMessageDto.setNegoPrice(-1);
 
         List<ChatRoomListGetResponse> list = chatRoomService.getChatRoomList(accessToken);
-//        for (ChatRoomListGetResponse chatRoomListGetResponse : list) {
-//            System.out.println("time = " + chatRoomListGetResponse.getChatMessageDto().getTime());
-//        }
 
         Comparator<ChatRoomListGetResponse> comparator = new Comparator<ChatRoomListGetResponse>() {
             @Override
