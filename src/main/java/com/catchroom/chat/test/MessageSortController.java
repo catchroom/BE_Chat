@@ -40,8 +40,8 @@ public class MessageSortController {
         Comparator<ChatRoomListGetResponse> comparator = new Comparator<ChatRoomListGetResponse>() {
             @Override
             public int compare(ChatRoomListGetResponse o1, ChatRoomListGetResponse o2) {
-                if (o1.getChatMessageDto() != null && o2.getChatMessageDto() != null) {
-                    return LocalDateTime.parse(o2.getChatMessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o1.getChatMessageDto().getTime()).withNano(0));
+                if (o1.getLastChatmessageDto() != null && o2.getLastChatmessageDto() != null) {
+                    return LocalDateTime.parse(o2.getLastChatmessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o1.getLastChatmessageDto().getTime()).withNano(0));
                 } else {
                     return 0;
                 }
