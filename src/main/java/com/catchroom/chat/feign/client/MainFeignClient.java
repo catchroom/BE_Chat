@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
         configuration = FeignConfig.class
 )
 public interface MainFeignClient {
-// user의 닉네임
+
     @RequestMapping(method = RequestMethod.GET, value = "/accommodation/{accommodationId}")
     AccommodationResponse getAccommodationDto(@PathVariable Long accommodationId);
 

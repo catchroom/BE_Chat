@@ -18,7 +18,8 @@ public class ChatRoomRepository {
 
     private static final String CHAT_ROOM = "CHAT_ROOM_LAST_MSG"; //채팅방
     public static final String USER_COUNT = "USER_COUNT"; // 채팅룸에 입장한 클라이언트수 저장
-    public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
+    public static final String ENTER_INFO = "ENTER_INFO";
+    // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
 
     // HashOperations<String, String, ChatRoom> : Redis의 해시 데이터 구조를 다룸.
     // String 타입의 key, String 타입의 필드, chatRoom 객체의 값으로 구성된 해시를 다룬다.
