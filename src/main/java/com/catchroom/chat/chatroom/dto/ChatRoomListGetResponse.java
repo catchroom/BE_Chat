@@ -1,5 +1,6 @@
 package com.catchroom.chat.chatroom.dto;
 
+import com.catchroom.chat.chatroom.type.DealState;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.type.UserIdentity;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class ChatRoomListGetResponse {
     private String accommodationUrl;
     private String partnerNickName;
     private ChatMessageDto lastChatmessageDto;
+    private DealState dealState;
 
     public void updateChatMessageDto(ChatMessageDto chatMessageDto) {
         this.lastChatmessageDto = chatMessageDto;
