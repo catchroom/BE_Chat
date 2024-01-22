@@ -28,7 +28,6 @@ public class MessageSortController {
         ChatMessageDto chatMessageDto = new ChatMessageDto();
         chatMessageDto.setType(MessageType.ENTER);
         chatMessageDto.setRoomId("test-room-id-kkkk");
-        chatMessageDto.setSender("혜민");
         chatMessageDto.setUserId(4L);
         chatMessageDto.setMessage("test 메세지 보냄");
         chatMessageDto.setTime(String.valueOf(LocalDateTime.now()));

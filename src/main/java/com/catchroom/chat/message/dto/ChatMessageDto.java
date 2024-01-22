@@ -20,7 +20,6 @@ public class ChatMessageDto implements Serializable {
 
     private MessageType type; // 메시지 타입
     private String roomId; // 방 번호
-    private String sender; // 채팅을 보낸 사람
     private Long userId;
     private String message; // 메시지
     private String time;
@@ -30,7 +29,6 @@ public class ChatMessageDto implements Serializable {
     public static ChatMessageDto fromEntity(ChatMessage chatMessage) {
         return ChatMessageDto.builder()
                 .type(chatMessage.getType())
-                .sender(chatMessage.getSender())
                 .userId(chatMessage.getUserId())
                 .roomId(chatMessage.getRoomId())
                 .time(chatMessage.getTime())
