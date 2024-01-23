@@ -42,12 +42,15 @@ public class RedisSubscriber {
 
     public void sendRoomList(String publishMessage) {
         try {
-            log.info("Redis Subcriber room publishMsg ing..");
+            log.info("Redis Subcriber room publishMsg ing.. ");
 
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
-            List<ChatRoomListGetResponse> chatRoomListGetResponseList = objectMapper.readValue(publishMessage, MessageSubDto.class)
-                .getList();
+            List<ChatRoomListGetResponse> chatRoomListGetResponseList =
+                    objectMapper.readValue(publishMessage, MessageSubDto.class).getList();
             sortChatRoomListLatest(chatRoomListGetResponseList);
+
+            log.info("chatRoomList : {}", chatRoomListGetResponseList);
+
             // 로그인 유저 채팅방 리스트 최신화
             messagingTemplate.convertAndSend("/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList);
         } catch (Exception e) {

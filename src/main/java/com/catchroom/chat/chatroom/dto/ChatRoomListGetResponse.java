@@ -1,5 +1,6 @@
 package com.catchroom.chat.chatroom.dto;
 
+import com.catchroom.chat.chatroom.type.ChatRoomState;
 import com.catchroom.chat.chatroom.type.DealState;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.type.UserIdentity;
@@ -22,6 +23,8 @@ public class ChatRoomListGetResponse {
     private String partnerNickName;
     private ChatMessageDto lastChatmessageDto;
     private DealState dealState;
+    private ChatRoomState buyerState;
+    private ChatRoomState sellerState;
 
     public void updateChatMessageDto(ChatMessageDto chatMessageDto) {
         this.lastChatmessageDto = chatMessageDto;
