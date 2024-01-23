@@ -28,7 +28,7 @@ public class RedisSubscriber {
      */
     public void sendMessage(String publishMessage) {
         try {
-            log.info("Redis Subcriber publishMsg: {}", publishMessage);
+            log.info("Redis Subcriber publishMsg : {}", publishMessage);
 
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
 
@@ -41,7 +41,7 @@ public class RedisSubscriber {
 
     public void sendRoomList(String publishMessage) {
         try {
-            log.info("Redis Subcriber  room publishMsg: {}", publishMessage);
+            log.info("Redis Subcriber room publishMsg ing..");
 
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
             List<ChatRoomListGetResponse> chatRoomListGetResponseList = objectMapper.readValue(publishMessage, MessageSubDto.class)
