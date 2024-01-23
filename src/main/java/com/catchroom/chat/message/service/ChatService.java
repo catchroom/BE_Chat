@@ -3,6 +3,7 @@ package com.catchroom.chat.message.service;
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
 import com.catchroom.chat.feign.client.MainFeignClient;
+import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.global.pubsub.RedisPublisher;
 import com.catchroom.chat.message.dto.MessageSubDto;
@@ -21,6 +22,7 @@ public class ChatService {
     private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomService chatRoomService;
+    private final MainFeignClient mainFeignClient;
 
     /**
      * destination 정보에서 roomId 추출
@@ -40,6 +42,10 @@ public class ChatService {
         chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
         chatRoomRepository.setLastChatMessage(chatMessage.getRoomId(), chatMessage);
 
+        if (chatMessage.getType().equals(MessageType.DELETE)) {
+            deleteChatRoom(accessToken, chatMessage.getRoomId());
+        }
+
         List<ChatRoomListGetResponse> chatRoomListGetResponseList =
             chatRoomService.getChatRoomList(accessToken);
 
@@ -49,6 +55,16 @@ public class ChatService {
             .build();
 
         redisPublisher.publish(messageSubDto);
+    }
+
+
+    /**
+     * 채팅방 삭제 로직
+     * @param accessToken
+     * @param roomId
+     */
+    private void deleteChatRoom(String accessToken, String roomId) {
+        SuccessMessage message = mainFeignClient.deleteChatRoom(accessToken, roomId);
     }
 
 }
