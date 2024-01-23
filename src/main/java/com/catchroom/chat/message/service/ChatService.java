@@ -13,10 +13,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChatService {
 
     private final RedisPublisher redisPublisher;
@@ -64,7 +66,9 @@ public class ChatService {
      * @param roomId
      */
     private void deleteChatRoom(String accessToken, String roomId) {
+        log.info("=>> 채팅방 삭제 {} start ", roomId);
         SuccessMessage message = mainFeignClient.deleteChatRoom(accessToken, roomId);
+        log.info("=>> 채팅방 삭제 {} Msg : {}", roomId, message.Meassage());
     }
 
 }
