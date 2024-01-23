@@ -1,6 +1,7 @@
 package com.catchroom.chat.feign.client;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.global.config.FeignConfig;
 import com.catchroom.chat.feign.dto.AccommodationResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -19,8 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  *
  */
+//@FeignClient(
+//        name = "mainFeign", url = "https://catchroom.xyz/v1",
+//        configuration = FeignConfig.class
+//)
 @FeignClient(
-        name = "mainFeign", url = "https://catchroom.xyz/v1",
+        name = "mainFeign", url = "http://localhost:8080/v1",
         configuration = FeignConfig.class
 )
 public interface MainFeignClient {
@@ -32,7 +37,7 @@ public interface MainFeignClient {
     List<ChatRoomListGetResponse> getChatRoomList(@RequestHeader("Authorization") String accessToken);
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/chat/room")
-    String deleteChatRoom(
+    SuccessMessage deleteChatRoom(
             @RequestHeader("Authorization") String accessToken,
             @RequestParam(name = "roomId") String roomId
     );
