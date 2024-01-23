@@ -49,7 +49,10 @@ public class RedisSubscriber {
                     objectMapper.readValue(publishMessage, MessageSubDto.class).getList();
             sortChatRoomListLatest(chatRoomListGetResponseList);
 
-            log.info("chatRoomList : {}", chatRoomListGetResponseList);
+            log.info("chat Room List Sub : ");
+            for (ChatRoomListGetResponse dto : chatRoomListGetResponseList) {
+                log.info("room Id {}, buyerState : {}, sellerState : {}", dto.getChatRoomNumber(), dto.getBuyerState(), dto.getSellerState());
+            }
 
             // 로그인 유저 채팅방 리스트 최신화
             messagingTemplate.convertAndSend("/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList);
