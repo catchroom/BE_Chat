@@ -18,13 +18,21 @@ public class ChatRoomListGetResponse {
     private Long buyerId;
     private Long sellerId;
     private Long productId;
+
+    private String accommodationName;
+    private int sellPrice;
+
     private UserIdentity loginUserIdentity;
     private String accommodationUrl;
+
     private String partnerNickName;
-    private ChatMessageDto lastChatmessageDto;
+
     private DealState dealState;
     private ChatRoomState buyerState;
     private ChatRoomState sellerState;
+
+    private ChatMessageDto lastChatmessageDto;
+
 
     public void updateChatMessageDto(ChatMessageDto chatMessageDto) {
         this.lastChatmessageDto = chatMessageDto;
