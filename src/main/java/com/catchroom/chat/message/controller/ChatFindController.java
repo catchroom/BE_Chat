@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/chat")
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://localhost:3000","https://dev.dhlbrqe2v28e4.amplifyapp.com"}, allowedHeaders = "*")
 @RequiredArgsConstructor
 @Slf4j
 public class ChatFindController {

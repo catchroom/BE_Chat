@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/chat/room")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://localhost:3000", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://localhost:3000","https://dev.dhlbrqe2v28e4.amplifyapp.com"}, allowedHeaders = "*")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
