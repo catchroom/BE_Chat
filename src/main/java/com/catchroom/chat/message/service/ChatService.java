@@ -41,7 +41,6 @@ public class ChatService {
      * 채팅방에 메시지 발송
      */
     public void sendChatMessage(ChatMessageDto chatMessage, String accessToken) {
-        chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
         chatRoomRepository.setLastChatMessage(chatMessage.getRoomId(), chatMessage);
 
         if (chatMessage.getType().equals(MessageType.DELETE)) {
