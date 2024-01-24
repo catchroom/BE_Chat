@@ -48,10 +48,6 @@ public class ChatMongoService {
                         .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void deleteRoomId(String roomId) {
-        chatMessageRepository.deleteAllByRoomId(roomId);
-    }
 
     private Page<ChatMessage> findByRoomIdWithPaging(String roomId, int page, int size) {
         Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Direction.DESC,"time"));
