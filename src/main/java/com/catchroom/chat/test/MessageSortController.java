@@ -6,10 +6,8 @@ import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.dto.MessageSubDto;
 import com.catchroom.chat.message.type.MessageType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.mongodb.util.BsonUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -21,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageSortController {
     private final ChatRoomService chatRoomService;
+
     @GetMapping()
     public MessageSubDto getChatRoomListAndMessage(
         @RequestHeader("Authorization") String accessToken
@@ -47,7 +46,7 @@ public class MessageSortController {
             }
 
         };
-        Collections.sort(list,comparator);
+        Collections.sort(list, comparator);
         MessageSubDto messageSubDto = MessageSubDto.builder()
             .chatMessageDto(chatMessageDto)
             .list(list)
@@ -55,5 +54,13 @@ public class MessageSortController {
 
 
         return messageSubDto;
+    }
+
+    @GetMapping("/delete")
+    public void getChatRoomListAndMessage(
+        @RequestHeader("Authorization") String accessToken,
+        @RequestParam(name = "roomId") String roomId
+    ) {
+        System.out.println("삭제??");
     }
 }
