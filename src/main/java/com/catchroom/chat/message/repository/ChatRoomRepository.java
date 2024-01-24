@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ChatRoomRepository {
 
-    private final RedisTemplate<String, Object> redisTemplate;
-
     private static final String CHAT_ROOM = "CHAT_ROOM_LAST_MSG"; //채팅방 마지막 메시지 저장
-
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatMessageDto> opsHashLastChatMessage;
