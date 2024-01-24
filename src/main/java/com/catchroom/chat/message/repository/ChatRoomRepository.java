@@ -23,20 +23,28 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ChatRoomRepository {
 
-    private static final String CHAT_ROOM = "CHAT_ROOM_LAST_MSG"; //채팅방
+    private static final String CHAT_ROOM = "CHAT_ROOM_LAST_MSG"; //채팅방 마지막 메시지 저장
 
-    private static final String CHAT_ROOM_TEMPLATE = "CHAT_ROOM_LAST_MSG_TEMPLATE";
+    @Resource(name = "redisTemplate")
+    private HashOperations<String, String, ChatMessageDto> opsHashLastChatMessage;
+
+
+    public void setLastChatMessage(String roomId, ChatMessageDto chatMessageDto) {
+        opsHashLastChatMessage.put(CHAT_ROOM, roomId, chatMessageDto);
+    }
+
+    public ChatMessageDto getLastMessage(String roomId) {
+        return opsHashLastChatMessage.get(CHAT_ROOM, roomId);
+    }
+
+
+
+
+
+    /******************** 밑에 코드 사용 안하지만 일단 냅둠 ***************************/
 
     public static final String USER_COUNT = "USER_COUNT"; // 채팅룸에 입장한 클라이언트수 저장
     public static final String ENTER_INFO = "ENTER_INFO";
-    // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
-
-    // HashOperations<String, String, ChatRoom> : Redis의 해시 데이터 구조를 다룸.
-    // String 타입의 key, String 타입의 필드, chatRoom 객체의 값으로 구성된 해시를 다룬다.
-    @Resource(name = "redisTemplate") //redisTemplate bean 주입.
-    private HashOperations<String, String, ChatMessageDto> opsHashLastChatMessage;
-
-    private RedisTemplate<String, Map<String, ChatMessageDto>> lastChatMessage;
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, String> hashOpsEnterInfo;
@@ -46,20 +54,6 @@ public class ChatRoomRepository {
 
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> userInfoOps;
-
-
-    public void setLastChatMessage(String roomId, ChatMessageDto chatMessageDto) {
-        lastChatMessage.expire(CHAT_ROOM_TEMPLATE, 1, TimeUnit.MINUTES);
-        opsHashLastChatMessage.put(CHAT_ROOM, roomId, chatMessageDto);
-        lastChatMessage.opsForHash().put(CHAT_ROOM_TEMPLATE, roomId, chatMessageDto);
-    }
-
-    public ChatMessageDto getLastMessage(String roomId) {
-        ChatMessageDto dto = (ChatMessageDto) lastChatMessage.opsForHash().get(CHAT_ROOM_TEMPLATE, roomId);
-        log.info("restTemplate Test -> {} : {} ", dto.getRoomId(), dto.getMessage());
-        return opsHashLastChatMessage.get(CHAT_ROOM, roomId);
-    }
-
 
     // 세션 id와 유저 정보 가져오기.
     public String getUserInfoBySessionId(String sessionId) {
