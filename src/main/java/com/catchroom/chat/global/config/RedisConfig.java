@@ -31,10 +31,11 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(
-                redisProperties.getHost(),
-                redisProperties.getPort())
-        );
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
+        lettuceConnectionFactory.setHostName(redisProperties.getHost());
+        lettuceConnectionFactory.setPort(redisProperties.getPort());
+        lettuceConnectionFactory.setPassword(redisProperties.getPassword());
+        return lettuceConnectionFactory;
     }
 
     /**
@@ -84,6 +85,9 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+
         return redisTemplate;
     }
+
+
 }
