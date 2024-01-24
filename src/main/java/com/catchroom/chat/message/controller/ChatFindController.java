@@ -23,10 +23,11 @@ public class ChatFindController {
     @GetMapping("/room/find")
     public ResponseEntity<?> roomFindInfo(
             @RequestHeader("Authorization") String accessToken,
-            @RequestParam(name = "id") String id
+            @RequestParam(name = "id") String id,
+            @RequestParam(name = "page") Integer pageNumber
     ) {
         return ResponseEntity.ok(
-                ApiResponse.create(6003, chatMongoService.findAll(id))
+                ApiResponse.create(6003, chatMongoService.findAll(id,pageNumber))
         );
     }
 

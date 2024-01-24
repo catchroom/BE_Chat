@@ -2,13 +2,9 @@ package com.catchroom.chat.message.dto;
 
 import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.type.MessageType;
+import lombok.*;
+
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Builder
 @Getter

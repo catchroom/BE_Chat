@@ -8,6 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatMongoService {
 
     private final ChatMessageRepository chatMessageRepository;
+    private final MongoTemplate mongoTemplate;
 
     // 채팅 저장
     @Transactional
@@ -33,17 +42,33 @@ public class ChatMongoService {
 
     // 채팅 불러오기
     @Transactional(readOnly = true)
-    public List<ChatMessageDto> findAll(String roomId) {
-        List<ChatMessageDto> chatMessageList =
-                chatMessageRepository.findAllByRoomId(roomId)
+    public List<ChatMessageDto> findAll(String roomId,Integer pageNumber) {
+        return findByRoomIdWithPaging(roomId,pageNumber,20)
                         .stream().map(ChatMessageDto::fromEntity)
                         .collect(Collectors.toList());
-        return chatMessageList;
     }
 
     @Transactional
     public void deleteRoomId(String roomId) {
         chatMessageRepository.deleteAllByRoomId(roomId);
+    }
+
+    private Page<ChatMessage> findByRoomIdWithPaging(String roomId, int page, int size) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Direction.DESC,"time"));
+
+        Query query = new Query()
+            .with(pageable)
+            .skip((long) pageable.getPageSize() * pageable.getPageNumber())
+            .limit(pageable.getPageSize());
+
+        query.addCriteria(Criteria.where("roomId").is(roomId));
+
+        List<ChatMessage> filteredChatMessage = mongoTemplate.find(query, ChatMessage.class, "chat");
+        return PageableExecutionUtils.getPage(
+            filteredChatMessage,
+            pageable,
+            () -> mongoTemplate.count(query.skip(-1).limit(-1), ChatMessage.class)
+        );
     }
 
 
