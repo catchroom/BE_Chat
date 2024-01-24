@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class ChatRoomRepository {
 
@@ -46,11 +47,9 @@ public class ChatRoomRepository {
     @Resource(name = "redisTemplate")
     private ValueOperations<String, String> userInfoOps;
 
-    public ChatRoomRepository() {
-        lastChatMessage.expire(CHAT_ROOM_TEMPLATE, 1, TimeUnit.MINUTES);
-    }
 
     public void setLastChatMessage(String roomId, ChatMessageDto chatMessageDto) {
+        lastChatMessage.expire(CHAT_ROOM_TEMPLATE, 1, TimeUnit.MINUTES);
         opsHashLastChatMessage.put(CHAT_ROOM, roomId, chatMessageDto);
         lastChatMessage.opsForHash().put(CHAT_ROOM_TEMPLATE, roomId, chatMessageDto);
     }
