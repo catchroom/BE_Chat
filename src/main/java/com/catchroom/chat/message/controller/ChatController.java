@@ -1,7 +1,6 @@
 package com.catchroom.chat.message.controller;
 
 import com.catchroom.chat.message.dto.ChatMessageDto;
-import com.catchroom.chat.message.repository.ChatRoomRepository;
 import com.catchroom.chat.message.service.ChatMongoService;
 import com.catchroom.chat.message.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @RequiredArgsConstructor
 @Controller
