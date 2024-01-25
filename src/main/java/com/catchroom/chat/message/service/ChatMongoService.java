@@ -4,6 +4,9 @@ import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.repository.ChatMessageRepository;
 import com.catchroom.chat.message.type.MessageType;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +53,7 @@ public class ChatMongoService {
 
 
     private Page<ChatMessage> findByRoomIdWithPaging(String roomId, int page, int size) {
-        Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Direction.ASC,"time"));
+        Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"time"));
 
         Query query = new Query()
             .with(pageable)
@@ -60,6 +63,7 @@ public class ChatMongoService {
         query.addCriteria(Criteria.where("roomId").is(roomId));
 
         List<ChatMessage> filteredChatMessage = mongoTemplate.find(query, ChatMessage.class, "chat");
+        Collections.sort(filteredChatMessage, Comparator.comparing(ChatMessage::getTime));
         return PageableExecutionUtils.getPage(
             filteredChatMessage,
             pageable,
