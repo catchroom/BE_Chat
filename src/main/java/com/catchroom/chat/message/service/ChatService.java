@@ -7,9 +7,8 @@ import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.global.pubsub.RedisPublisher;
 import com.catchroom.chat.message.dto.MessageSubDto;
-import com.catchroom.chat.message.repository.ChatRoomRepository;
+import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.type.MessageType;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class ChatService {
 
     private final RedisPublisher redisPublisher;
-    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomRedisRepository chatRoomRedisRepository;
     private final ChatRoomService chatRoomService;
     private final MainFeignClient mainFeignClient;
 
@@ -41,14 +40,14 @@ public class ChatService {
      * 채팅방에 메시지 발송
      */
     public void sendChatMessage(ChatMessageDto chatMessage, String accessToken) {
-        chatRoomRepository.setLastChatMessage(chatMessage.getRoomId(), chatMessage);
+        chatRoomRedisRepository.setLastChatMessage(chatMessage.getRoomId(), chatMessage);
 
         if (chatMessage.getType().equals(MessageType.DELETE)) {
             deleteChatRoom(accessToken, chatMessage.getRoomId());
         }
 
         List<ChatRoomListGetResponse> chatRoomListGetResponseList =
-            chatRoomService.getChatRoomList(accessToken);
+            chatRoomService.getChatRoomList(chatMessage.getUserId(), accessToken, chatMessage.getType());
 
         MessageSubDto messageSubDto = MessageSubDto.builder()
             .chatMessageDto(chatMessage)

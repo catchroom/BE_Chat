@@ -1,9 +1,6 @@
 package com.catchroom.chat.global.handler;
-import com.catchroom.chat.message.dto.ChatMessageDto;
-import com.catchroom.chat.message.repository.ChatRoomRepository;
+import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.service.ChatService;
-import com.catchroom.chat.message.type.MessageType;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -18,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StompHandler implements ChannelInterceptor {
 
-    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomRedisRepository chatRoomRedisRepository;
     private final ChatService chatService;
 
     /** websocket을 통해 들어온 요청이 처리 되기전 실행된다.*/

@@ -1,6 +1,5 @@
 package com.catchroom.chat.global.pubsub;
 
-import static com.catchroom.chat.global.util.ChatRoomUtil.sortChatRoomListLatest;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
@@ -10,10 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +26,8 @@ public class RedisSubscriber {
     public void sendMessage(String publishMessage) {
         try {
 
-            ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
+            ChatMessageDto chatMessage =
+                    objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
 
             log.info("Redis Subcriber MSG publishMsg : {}", chatMessage.getMessage());
 
@@ -49,16 +45,17 @@ public class RedisSubscriber {
         try {
             log.info("Redis Subcriber room publishMsg ing.. ");
 
-            ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
+            ChatMessageDto chatMessage =
+                    objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
+
             List<ChatRoomListGetResponse> chatRoomListGetResponseList =
                     objectMapper.readValue(publishMessage, MessageSubDto.class).getList();
-
-            sortChatRoomListLatest(chatRoomListGetResponseList);
 
             // 로그인 유저 채팅방 리스트 최신화
             messagingTemplate.convertAndSend(
                     "/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList
             );
+
         } catch (Exception e) {
             log.error("Exception {}", e);
         }

@@ -18,7 +18,7 @@ public class ChatRoomController {
     public List<ChatRoomListGetResponse> getChatRoomList(
         @RequestHeader("Authorization") String accessToken
         ) {
-        return chatRoomService.getChatRoomList(accessToken);
+        return chatRoomService.getChatRoomListAccessToken(accessToken);
     }
 
 
