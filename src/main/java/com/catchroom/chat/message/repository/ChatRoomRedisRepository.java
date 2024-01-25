@@ -2,7 +2,13 @@ package com.catchroom.chat.message.repository;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +18,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /** redis 와 관련된 메소드들 */
 
@@ -24,6 +31,9 @@ public class ChatRoomRedisRepository {
     private static final String CHAT_ROOM = "CHAT_ROOM_LAST_MSG"; //채팅방 마지막 메시지 저장
 
     private static final String CHAT_ROOM_LIST = "_CHAT_ROOM_LIST";
+
+
+    private final ObjectMapper objectMapper;
 
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -39,8 +49,21 @@ public class ChatRoomRedisRepository {
         opsHashLastChatMessage.put(CHAT_ROOM, roomId, chatMessageDto);
     }
 
-    public ChatMessageDto getLastMessage(String roomId) {
-        return opsHashLastChatMessage.get(CHAT_ROOM, roomId);
+    public Optional<ChatMessageDto> getLastMessage(String roomId) {
+
+        String jsonData = String.valueOf(opsHashLastChatMessage.get(CHAT_ROOM, roomId));
+
+        try {
+            if (StringUtils.hasText(jsonData)) {
+                return Optional.ofNullable(objectMapper.readValue(jsonData, ChatMessageDto.class));
+            }
+            return Optional.empty();
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+//        return opsHashLastChatMessage.get(CHAT_ROOM, roomId);
     }
 
 
@@ -53,9 +76,26 @@ public class ChatRoomRedisRepository {
     }
 
 
-    public List<ChatRoomListGetResponse> getChatRoomList(Long userId) {
+    public Optional<List<ChatRoomListGetResponse>> getChatRoomList(Long userId) {
         String key = userId + CHAT_ROOM_LIST;
-        return (List<ChatRoomListGetResponse>) listValueOperations.get(key);
+
+        String jsonData = String.valueOf(listValueOperations.get(key));
+
+        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
+        try {
+            if (StringUtils.hasText(jsonData)) {
+                List<ChatRoomListGetResponse> list =
+                        Arrays.stream(objectMapper.readValue(jsonData, ChatRoomListGetResponse[].class)).toList();
+                return Optional.of(list);
+            }
+            return Optional.empty();
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+//        return (List<ChatRoomListGetResponse>) listValueOperations.get(key);
     }
 
 

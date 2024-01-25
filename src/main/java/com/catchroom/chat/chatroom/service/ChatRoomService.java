@@ -7,6 +7,7 @@ import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.repository.ChatMessageRepository;
 import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.type.MessageType;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,8 +42,14 @@ public class ChatRoomService {
             Long userId, String accessToken, MessageType type
     ) {
         Long beforeTime = System.currentTimeMillis();
-        List<ChatRoomListGetResponse> chatRoomList = chatRoomRedisRepository.getChatRoomList(userId);
-        if (type.equals(MessageType.DELETE) || type.equals(MessageType.ENTER) || chatRoomList == null) {
+
+        Optional<List<ChatRoomListGetResponse>> chatRoomListOptional =
+                chatRoomRedisRepository.getChatRoomList(userId);
+
+        List<ChatRoomListGetResponse> chatRoomList = null;
+
+        if (type.equals(MessageType.DELETE) || type.equals(MessageType.ENTER) ||
+                chatRoomListOptional.isEmpty()) {
 
             chatRoomList = mainFeignClient.getChatRoomList(accessToken);
             chatRoomRedisRepository.setChatRoomList(userId, chatRoomList);
@@ -50,7 +57,7 @@ public class ChatRoomService {
             log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
 
         } else {
-
+            chatRoomList = chatRoomListOptional.get();
             log.info("ChatRoom have!!!! time : {}", System.currentTimeMillis() - beforeTime);
 
         }
@@ -66,12 +73,13 @@ public class ChatRoomService {
 
         //최신 메세지가 레디스에 있는 경우
         if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) != null) {
-            chatRoomListGetResponse.updateChatMessageDto(chatRoomRedisRepository.getLastMessage(chatRoomNumber));
+            chatRoomListGetResponse.updateChatMessageDto(chatRoomRedisRepository.getLastMessage(chatRoomNumber).get());
         }
 
         //최신 메세지가 레디스에 없고 몽고디비에는 있는 경우
         else if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) == null &&
-            !chatMessageRepository.findAllByRoomId(chatRoomNumber).isEmpty()) {
+            !chatMessageRepository.findAllByRoomId(chatRoomNumber).isEmpty()
+        ) {
             ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(chatRoomNumber).get(0);
             chatRoomListGetResponse.updateChatMessageDto(ChatMessageDto.fromEntity(lastChatMessageMongo));
         }
