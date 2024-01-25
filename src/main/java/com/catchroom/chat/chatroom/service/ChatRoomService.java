@@ -40,10 +40,11 @@ public class ChatRoomService {
         List<ChatRoomListGetResponse> chatRoomList = chatRoomRedisRepository.getChatRoomList(userId);
         if (type.equals(MessageType.DELETE) || type.equals(MessageType.ENTER) || chatRoomList == null) {
 
-            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
-
             chatRoomList = mainFeignClient.getChatRoomList(accessToken);
             chatRoomRedisRepository.setChatRoomList(userId, chatRoomList);
+
+            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
+
         } else {
 
             log.info("ChatRoom have!!!! time : {}", System.currentTimeMillis() - beforeTime);
