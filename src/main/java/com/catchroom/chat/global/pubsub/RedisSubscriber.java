@@ -1,5 +1,7 @@
 package com.catchroom.chat.global.pubsub;
 
+import static com.catchroom.chat.global.util.ChatRoomUtil.sortChatRoomListLatest;
+
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.dto.MessageSubDto;
@@ -34,7 +36,10 @@ public class RedisSubscriber {
             log.info("Redis Subcriber MSG publishMsg : {}", chatMessage.getMessage());
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
+            messagingTemplate.convertAndSend(
+                    "/sub/chat/room/" + chatMessage.getRoomId(), chatMessage
+            );
+
         } catch (Exception e) {
             log.error("Exception {}", e);
         }
@@ -47,33 +52,18 @@ public class RedisSubscriber {
             ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
             List<ChatRoomListGetResponse> chatRoomListGetResponseList =
                     objectMapper.readValue(publishMessage, MessageSubDto.class).getList();
+
             sortChatRoomListLatest(chatRoomListGetResponseList);
 
-            log.info("chat Room List Sub : ");
-            for (ChatRoomListGetResponse dto : chatRoomListGetResponseList) {
-                log.info("room Id {}, buyerState : {}, sellerState : {}", dto.getChatRoomNumber(), dto.getBuyerState(), dto.getSellerState());
-            }
-
             // 로그인 유저 채팅방 리스트 최신화
-            messagingTemplate.convertAndSend("/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList);
+            messagingTemplate.convertAndSend(
+                    "/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList
+            );
         } catch (Exception e) {
             log.error("Exception {}", e);
         }
     }
 
-    private void sortChatRoomListLatest(List<ChatRoomListGetResponse> chatRoomListGetResponseList) {
-        Comparator<ChatRoomListGetResponse> comparator = new Comparator<ChatRoomListGetResponse>() {
-            @Override
-            public int compare(ChatRoomListGetResponse o1, ChatRoomListGetResponse o2) {
-                if (o1.getLastChatmessageDto() != null && o2.getLastChatmessageDto() != null) {
-                    return LocalDateTime.parse(o2.getLastChatmessageDto().getTime()).withNano(0).compareTo(LocalDateTime.parse(o1.getLastChatmessageDto().getTime()).withNano(0));
-                } else {
-                    return 0;
-                }
-            }
-        };
-        Collections.sort(chatRoomListGetResponseList,comparator);
-    }
 
 }
 
