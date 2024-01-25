@@ -24,6 +24,11 @@ public class ChatRoomService {
     private final ChatRoomRedisRepository chatRoomRedisRepository;
     private final ChatMessageRepository chatMessageRepository;
 
+    public ChatRoomListGetResponse getChatRoomInfo(String accessToken, String roomId) {
+        return mainFeignClient.getChatRoomInfo(accessToken, roomId);
+    }
+
+
     public List<ChatRoomListGetResponse> getChatRoomListAccessToken(String accessToken) {
         Long beforeTime = System.currentTimeMillis();
 
@@ -40,20 +45,30 @@ public class ChatRoomService {
     public List<ChatRoomListGetResponse> getChatRoomList(
             Long userId, String accessToken, MessageType type
     ) {
-        Long beforeTime = System.currentTimeMillis();
-        List<ChatRoomListGetResponse> chatRoomList = chatRoomRedisRepository.getChatRoomList(userId);
-        if (type.equals(MessageType.DELETE) || type.equals(MessageType.ENTER) || chatRoomList == null) {
 
-            chatRoomList = mainFeignClient.getChatRoomList(accessToken);
-            chatRoomRedisRepository.setChatRoomList(userId, chatRoomList);
+        List<ChatRoomListGetResponse> chatRoomList =
+                mainFeignClient.getChatRoomList(accessToken);
 
-            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
-
-        } else {
-
-            log.info("ChatRoom have!!!! time : {}", System.currentTimeMillis() - beforeTime);
-
-        }
+//        Long beforeTime = System.currentTimeMillis();
+//
+//        Optional<List<ChatRoomListGetResponse>> chatRoomListOptional =
+//                chatRoomRedisRepository.getChatRoomList(userId);
+//
+//        List<ChatRoomListGetResponse> chatRoomList = null;
+//
+//        if (type.equals(MessageType.DELETE) || type.equals(MessageType.ENTER) ||
+//                chatRoomListOptional.isEmpty()) {
+//
+//            chatRoomList = mainFeignClient.getChatRoomList(accessToken);
+//            chatRoomRedisRepository.setChatRoomList(userId, chatRoomList);
+//
+//            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
+//
+//        } else {
+//            chatRoomList = chatRoomListOptional.get();
+//            log.info("ChatRoom have!!!! time : {}", System.currentTimeMillis() - beforeTime);
+//
+//        }
 
         chatRoomList.forEach(this::recallLastMessage);
         sortChatRoomListLatest(chatRoomList);
@@ -71,7 +86,8 @@ public class ChatRoomService {
 
         //최신 메세지가 레디스에 없고 몽고디비에는 있는 경우
         else if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) == null &&
-            !chatMessageRepository.findAllByRoomId(chatRoomNumber).isEmpty()) {
+            !chatMessageRepository.findAllByRoomId(chatRoomNumber).isEmpty()
+        ) {
             ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(chatRoomNumber).get(0);
             chatRoomListGetResponse.updateChatMessageDto(ChatMessageDto.fromEntity(lastChatMessageMongo));
         }
