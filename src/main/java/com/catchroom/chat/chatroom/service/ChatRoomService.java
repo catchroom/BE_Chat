@@ -25,10 +25,14 @@ public class ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
 
     public List<ChatRoomListGetResponse> getChatRoomListAccessToken(String accessToken) {
+        Long beforeTime = System.currentTimeMillis();
 
         List<ChatRoomListGetResponse> chatRoomList = mainFeignClient.getChatRoomList(accessToken);
         chatRoomList.forEach(this::recallLastMessage);
         sortChatRoomListLatest(chatRoomList);
+
+        log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
+
 
         return chatRoomList;
     }
@@ -71,6 +75,7 @@ public class ChatRoomService {
             ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(chatRoomNumber).get(0);
             chatRoomListGetResponse.updateChatMessageDto(ChatMessageDto.fromEntity(lastChatMessageMongo));
         }
+
     }
 
     /**
