@@ -50,7 +50,7 @@ public class ChatMongoService {
 
 
     private Page<ChatMessage> findByRoomIdWithPaging(String roomId, int page, int size) {
-        Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Direction.DESC,"time"));
+        Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Direction.ASC,"time"));
 
         Query query = new Query()
             .with(pageable)
