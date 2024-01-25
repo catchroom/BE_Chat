@@ -28,6 +28,7 @@ public class ChatRoomRedisRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
+    @Resource(name = "redisTemplate")
     private ValueOperations<String, Object> listValueOperations;
 
     @Resource(name = "redisTemplate")
