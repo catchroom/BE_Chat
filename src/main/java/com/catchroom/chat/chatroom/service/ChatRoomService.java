@@ -26,7 +26,6 @@ import java.util.List;
 public class ChatRoomService {
     private final MainFeignClient mainFeignClient;
     private final ChatRoomRedisRepository chatRoomRedisRepository;
-    private final ChatMessageRepository chatMessageRepository;
     private final ChatMongoService chatMongoService;
 
     public ChatRoomListGetResponse getChatRoomInfo(String accessToken, String roomId) {
@@ -36,6 +35,7 @@ public class ChatRoomService {
     public List<ChatRoomListGetResponse> getChatRoomListByHttp(Long userId, String accessToken) {
         // 처음 HTTP 요청에서는 무조건 레디스 초기화 진행하도록 로직 수정
         List<ChatRoomListGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
+        chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
         chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
         sortChatRoomListLatest(chatRoomListGetResponseList);
         return chatRoomListGetResponseList;
