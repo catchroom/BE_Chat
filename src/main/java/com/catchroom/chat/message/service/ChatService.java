@@ -40,6 +40,9 @@ public class ChatService {
      * 채팅방에 메시지 발송
      */
     public void sendChatMessage(ChatMessageDto chatMessage, String accessToken) {
+
+        Long before = System.currentTimeMillis();
+
         chatRoomRedisRepository.setLastChatMessage(chatMessage.getRoomId(), chatMessage);
 
         if (chatMessage.getType().equals(MessageType.DELETE)) {
@@ -53,6 +56,9 @@ public class ChatService {
             .chatMessageDto(chatMessage)
             .list(chatRoomListGetResponseList)
             .build();
+
+        Long after = System.currentTimeMillis() - before;
+        log.error("message Time : {}", after);
 
         redisPublisher.publish(messageSubDto);
     }
