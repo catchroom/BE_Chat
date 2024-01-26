@@ -16,18 +16,21 @@ class ChatServiceTest {
     @Autowired
     ChatService chatService;
 
+    @Autowired
+    ChatMongoService chatMongoService;
+
     @Test
     void 실행_성공_토큰_재작성_필수() {
-        String accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJuYW1lIjoi6rmA7LKg7IiYIiwicGhvbmVOdW1iZXIiOiIwMTA4ODI1NDQ3MSIsIm5pY2tOYW1lIjoi7LKg7IiY7JmA7JiB7Z2sIiwiZW1haWwiOiJ0ZXN0OTI3QG5hdmVyLmNvbSIsImlzcyI6ImNhdGNocm9vbSIsImlhdCI6MTcwNjI2MDc3NSwiZXhwIjoxNzA2MjYyNTc0fQ.hd4zTCpvmTjVROOGOwnKumWMUjW-lKlDJhSML79Fc2MUEDzeXSZBYAznFV1tolhNdl2qrA1N8HgT1tchhKsx2A";
+        String accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJuYW1lIjoi7KeA7Jq0IiwicGhvbmVOdW1iZXIiOiIwMTAwMDAwMDAwMCIsIm5pY2tOYW1lIjoi7LGE7YyF7ISc67KEIiwiZW1haWwiOiJ0ZXN0MTEyMjExMjJAbWFpbC5jb20iLCJpc3MiOiJjYXRjaHJvb20iLCJpYXQiOjE3MDYyODQyNjIsImV4cCI6MTcwNjI4NjA2MX0.lge6IkfJAUr00HE47U5fdJpB5UtQUu9u8PKyKOLL7lS3gX8ORIxV8j0IM8xpfpO9fcq_hq7nP45YOw8yGX0kQw";
         ChatMessageDto messageDto = ChatMessageDto.builder()
                 .type(MessageType.TALK)
-                .message("실행되니? 3탄")
-                .roomId("f5556003-1151-4d26-a3a8-346db5e622a3")
-                .userId(28L)
-                .time(LocalDateTime.now().toString())
+                .message("실행돼면 좋겠다 제발 ~!")
+                .roomId("37bd6d8f-4b63-44bc-a1ec-26deea91e06d")
+                .userId(69L)
                 .build();
+        ChatMessageDto dto = chatMongoService.save(messageDto);
+        chatService.sendChatMessage(dto, accessToken);
 
-        chatService.sendChatMessage(messageDto, accessToken);
 
     }
 }
