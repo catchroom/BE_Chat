@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<SuccessMessage> handleFeignException(FeignException e) {
         log.error("존재하지 않는 엑세스 토큰입니다. ");
         return ResponseEntity.badRequest().body(
-                SuccessMessage.createSuccessMessage("TOKEN ERROR")
+                SuccessMessage.createSuccessMessage("ACCESS TOKEN ERROR")
         );
     }
 }
