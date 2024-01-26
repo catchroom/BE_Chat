@@ -21,7 +21,7 @@ class ChatServiceTest {
         String accessToken = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJuYW1lIjoi6rmA7LKg7IiYIiwicGhvbmVOdW1iZXIiOiIwMTA4ODI1NDQ3MSIsIm5pY2tOYW1lIjoi7LKg7IiY7JmA7JiB7Z2sIiwiZW1haWwiOiJ0ZXN0OTI3QG5hdmVyLmNvbSIsImlzcyI6ImNhdGNocm9vbSIsImlhdCI6MTcwNjI2MDc3NSwiZXhwIjoxNzA2MjYyNTc0fQ.hd4zTCpvmTjVROOGOwnKumWMUjW-lKlDJhSML79Fc2MUEDzeXSZBYAznFV1tolhNdl2qrA1N8HgT1tchhKsx2A";
         ChatMessageDto messageDto = ChatMessageDto.builder()
                 .type(MessageType.TALK)
-                .message("실행되니? 2탄")
+                .message("실행되니? 3탄")
                 .roomId("f5556003-1151-4d26-a3a8-346db5e622a3")
                 .userId(28L)
                 .time(LocalDateTime.now().toString())
