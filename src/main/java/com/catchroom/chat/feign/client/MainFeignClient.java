@@ -32,6 +32,12 @@ public interface MainFeignClient {
     @RequestMapping(method = RequestMethod.GET, value = "/chat/room/list/chat")
     List<ChatRoomListGetResponse> getChatRoomList(@RequestHeader("Authorization") String accessToken);
 
+    @RequestMapping(method = RequestMethod.GET, value = "/chat/room/info")
+    ChatRoomListGetResponse getChatRoomInfo(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(name = "roomId") String roomId
+    );
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/chat/room")
     SuccessMessage deleteChatRoom(
             @RequestHeader("Authorization") String accessToken,
