@@ -86,6 +86,8 @@ public class ChatService {
         ChatRoomListGetResponse newChatRoomListResponse = null;
 
         //레디스에 해당 채팅방이 저장이 안되어 있다면 추가해준다.
+
+
         if (!chatRoomRedisRepository.existChatRoom(chatMessage.getUserId(), chatMessage.getRoomId())) {
             newChatRoomListResponse = chatRoomService.getChatRoomInfo(accessToken, chatMessage.getRoomId());
         } else {
@@ -94,7 +96,8 @@ public class ChatService {
 
         newChatRoomListResponse.updateChatMessageDto(chatMessage);
 
-        chatRoomRedisRepository.setChatRoom(chatMessage.getUserId(), chatMessage.getRoomId(), newChatRoomListResponse);
+        chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(), chatMessage.getRoomId(), newChatRoomListResponse);
+        chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(), chatMessage.getRoomId(), newChatRoomListResponse);
 
     }
 
