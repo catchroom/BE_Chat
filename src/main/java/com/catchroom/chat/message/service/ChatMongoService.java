@@ -71,6 +71,18 @@ public class ChatMongoService {
         );
     }
 
+    public ChatMessage findLatestMessageByRoomId(String roomId) {
+        try {
+            Query query = new Query(Criteria.where("roomId").is(roomId))
+                    .with(Sort.by(Sort.Order.desc("_id")))
+                    .limit(1);
+
+            return mongoTemplate.findOne(query, ChatMessage.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
 
 }

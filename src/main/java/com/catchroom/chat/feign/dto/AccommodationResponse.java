@@ -1,6 +1,5 @@
 package com.catchroom.chat.feign.dto;
 
-import com.catchroom.chat.message.dto.RoomResponse;
 import com.catchroom.chat.message.type.AccommodationType;
 import java.util.List;
 import lombok.AllArgsConstructor;

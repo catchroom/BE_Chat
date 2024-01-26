@@ -1,4 +1,4 @@
-package com.catchroom.chat.message.dto;
+package com.catchroom.chat.feign.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

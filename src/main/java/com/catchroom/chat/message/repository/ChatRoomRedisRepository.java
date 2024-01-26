@@ -32,12 +32,17 @@ public class ChatRoomRedisRepository {
 
     private static final String CHAT_ROOM_KEY = "_CHAT_ROOM_RESPONSE_LIST";
 
+    private static final String CHAT_ROOM = "CHAT_ROOM_LAST_MSG"; //채팅방 마지막 메시지 저장
+
+
 
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoomListGetResponse> opsHashChatRoom;
 
+    @Resource(name = "redisTemplate")
+    private HashOperations<String, String, ChatMessageDto> opsHashLastChatMessage;
 
 
     private String getChatRoomKey(Long userId) {
@@ -78,6 +83,15 @@ public class ChatRoomRedisRepository {
 
     public List<ChatRoomListGetResponse> getChatRoomList(Long userId) {
         return opsHashChatRoom.values(getChatRoomKey(userId));
+    }
+
+
+    public void setLastChatMessage(String roomId, ChatMessageDto chatMessageDto) {
+        opsHashLastChatMessage.put(CHAT_ROOM, roomId, chatMessageDto);
+    }
+
+    public ChatMessageDto getLastMessage(String roomId) {
+        return opsHashLastChatMessage.get(CHAT_ROOM, roomId);
     }
 
 
