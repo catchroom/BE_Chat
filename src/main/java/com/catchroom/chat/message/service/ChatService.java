@@ -49,8 +49,6 @@ public class ChatService {
 
         Long before = System.currentTimeMillis();
 
-        List<ChatRoomListGetResponse> list = null;
-
         // 1. redis 에 채팅방이 없으면, 레디스에 리스트를 먼저 넣어준다.
         initIfChatRoomAbsent(chatMessage, accessToken);
 
@@ -157,10 +155,12 @@ public class ChatService {
             String chatRoomNumber = chatRoomListGetResponse.getChatRoomNumber();
 
             if (chatRoomListGetResponse.getLastChatmessageDto() == null) {
-                ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(
-                        chatRoomNumber).get(0);
-                chatRoomListGetResponse.updateChatMessageDto(
-                        ChatMessageDto.fromEntity(lastChatMessageMongo));
+                if (chatMessageRepository.findAllByRoomId(chatRoomNumber) != null) {
+                    ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(
+                            chatRoomNumber).get(0);
+                    chatRoomListGetResponse.updateChatMessageDto(
+                            ChatMessageDto.fromEntity(lastChatMessageMongo));
+                }
             }
         }
 
