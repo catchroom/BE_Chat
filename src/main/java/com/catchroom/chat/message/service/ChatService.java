@@ -50,7 +50,7 @@ public class ChatService {
         Long before = System.currentTimeMillis();
 
         // 1. redis 에 채팅방이 없으면, 레디스에 리스트를 먼저 넣어준다.
-        initIfChatRoomAbsent(chatMessage, accessToken);
+        initIfChatRoomAbsentInRedis(chatMessage, accessToken);
 
         // 2. 새로운 채팅방 정보가 없다면, 넣어준다.
         setNewChatRoomInfo(chatMessage, accessToken);
@@ -58,7 +58,7 @@ public class ChatService {
         // 3. 채팅방에 마지막 메시지를 넣어준다.
         setRedisChatMessage(chatMessage);
 
-        // 4. 채팅방이 삭제되는 것이라면 delete를 해준다.
+        // 4. 채팅방이 삭제되는 것이라면 delete 를 해준다.
         if (chatMessage.getType().equals(MessageType.DELETE)) {
             chatRoomRedisRepository.deleteChatRoom(chatMessage.getUserId(), chatMessage.getRoomId());
             deleteChatRoom(accessToken, chatMessage.getRoomId());
@@ -88,12 +88,12 @@ public class ChatService {
      * @param chatMessage
      * @param accessToken
      */
-    private void initIfChatRoomAbsent(ChatMessageDto chatMessage, String accessToken) {
+    private void initIfChatRoomAbsentInRedis(ChatMessageDto chatMessage, String accessToken) {
         if (!chatRoomRedisRepository.existChatRoomList(chatMessage.getUserId())) {
             List<ChatRoomListGetResponse> list =
                     chatRoomService.getChatRoomListAccessToken(accessToken);
 
-            log.error("init message : {}, userId : {}", chatMessage.getMessage(), chatMessage.getUserId());
+            log.info("chatRoom init message : {}, userId : {}", chatMessage.getMessage(), chatMessage.getUserId());
             chatRoomRedisRepository.initChatRoomList(chatMessage.getUserId(), list);
         }
     }
