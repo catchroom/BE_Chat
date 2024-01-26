@@ -44,15 +44,24 @@ public class RedisSubscriber {
         try {
             log.info("Redis Subcriber room publishMsg ing.. ");
 
-            ChatMessageDto chatMessage =
-                    objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
+            MessageSubDto dto = objectMapper.readValue(publishMessage, MessageSubDto.class);
 
-            List<ChatRoomListGetResponse> chatRoomListGetResponseList =
-                    objectMapper.readValue(publishMessage, MessageSubDto.class).getList();
+            ChatMessageDto chatMessage = dto.getChatMessageDto();
 
-            // 로그인 유저 채팅방 리스트 최신화
+            List<ChatRoomListGetResponse> chatRoomListGetResponseList = dto.getList();
+            List<ChatRoomListGetResponse> chatRoomListGetResponseListPartner = dto.getPartnerList();
+
+            Long userId = dto.getUserId();
+            Long partnerId = dto.getPartnerId();
+
+            // 로그인 유저 채팅방 리스트 최신화 -> 내 계정에 보냄
             messagingTemplate.convertAndSend(
-                    "/sub/chat/roomlist/" + chatMessage.getUserId(), chatRoomListGetResponseList
+                    "/sub/chat/roomlist/" + userId, chatRoomListGetResponseList
+            );
+
+            // 파트너 계정에도 리스트 최신화 보냄.
+            messagingTemplate.convertAndSend(
+                    "/sub/chat/roomlist/" + partnerId, chatRoomListGetResponseListPartner
             );
 
         } catch (Exception e) {

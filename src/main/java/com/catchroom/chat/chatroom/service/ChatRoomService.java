@@ -10,6 +10,7 @@ import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.service.ChatMongoService;
 import com.catchroom.chat.message.service.ChatService;
 import com.catchroom.chat.message.type.MessageType;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,21 @@ public class ChatRoomService {
     }
 
     public List<ChatRoomListGetResponse> getChatRoomListByHttp(Long userId, String accessToken) {
-        List<ChatRoomListGetResponse> chatRoomListGetResponseList = getChatRoomList(userId, accessToken);
+        // 처음 HTTP 요청에서는 무조건 레디스 초기화 진행하도록 로직 수정
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
+        chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
         sortChatRoomListLatest(chatRoomListGetResponseList);
+        return chatRoomListGetResponseList;
+    }
+
+    public List<ChatRoomListGetResponse> getChatRoomListByUserId(Long userId) {
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = new ArrayList<>();
+
+        if (chatRoomRedisRepository.existChatRoomList(userId)) {
+            chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
+            chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
+        }
+
         return chatRoomListGetResponseList;
     }
 

@@ -47,27 +47,44 @@ public class ChatService {
     public void sendChatMessage(ChatMessageDto chatMessage, String accessToken) {
         chatRoomRedisRepository.setLastChatMessage(chatMessage.getRoomId(), chatMessage);
 
+        Long userId = chatMessage.getUserId();
+        Long partnerId;
+
         Long before = System.currentTimeMillis();
 
-        // 1. 마지막 메시지들이 담긴 채팅방 리스트들을 가져온다.
-        List<ChatRoomListGetResponse> chatRoomListGetResponseList = chatRoomService.getChatRoomList(
-                chatMessage.getUserId(), accessToken
-        );
-
-        // 2. 채팅방 리스트에 새로운 채팅방 정보가 없다면, 넣어준다. 마지막 메시지도 같이 담는다. 상대방 레디스에도 업데이트 해준다.
-        setNewChatRoomInfo(chatMessage, accessToken);
-
-        // 3. 채팅방이 삭제되는 것이라면 delete 를 해준다.
+        // 1. 채팅방이 삭제되는 것이라면 delete 를 해준다.
         if (chatMessage.getType().equals(MessageType.DELETE)) {
-            chatRoomService.deleteChatRoom(accessToken, chatMessage.getRoomId(), chatMessage.getUserId());
+            chatRoomService.deleteChatRoom(accessToken, chatMessage.getRoomId(), userId);
         }
 
-        // 4. 마지막 메세지 기준으로 정렬 채팅방 리스트 정렬
+        ChatRoomListGetResponse newChatRoomListResponse = null;
+        if (!chatRoomRedisRepository.existChatRoom(userId, chatMessage.getRoomId())) {
+            newChatRoomListResponse = chatRoomService.getChatRoomInfo(accessToken, chatMessage.getRoomId());
+        } else {
+            newChatRoomListResponse = chatRoomRedisRepository.getChatRoom(userId, chatMessage.getRoomId());
+        }
+
+        partnerId = getPartnerId(chatMessage, newChatRoomListResponse);
+
+        // 2. 채팅방 리스트에 새로운 채팅방 정보가 없다면, 넣어준다. 마지막 메시지도 같이 담는다. 상대방 레디스에도 업데이트 해준다.
+        setNewChatRoomInfo(chatMessage, newChatRoomListResponse);
+
+        // 3. 마지막 메시지들이 담긴 채팅방 리스트들을 가져온다. // 4. 파트너 채팅방 리스트도 가져온다. (파트너는 userId 로만)
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = chatRoomService.getChatRoomList(userId, accessToken);
+        List<ChatRoomListGetResponse> partnerChatRoomGetResponseList = chatRoomService.getChatRoomListByUserId(partnerId);
+
+
+        // 5. 마지막 메세지 기준으로 정렬 채팅방 리스트 정렬
         chatRoomService.sortChatRoomListLatest(chatRoomListGetResponseList);
+        chatRoomService.sortChatRoomListLatest(partnerChatRoomGetResponseList);
+
 
         MessageSubDto messageSubDto = MessageSubDto.builder()
+            .userId(userId)
+            .partnerId(partnerId)
             .chatMessageDto(chatMessage)
             .list(chatRoomListGetResponseList)
+            .partnerList(partnerChatRoomGetResponseList)
             .build();
 
         Long after = System.currentTimeMillis() - before;
@@ -76,35 +93,48 @@ public class ChatService {
         redisPublisher.publish(messageSubDto);
     }
 
+    private Long getPartnerId(ChatMessageDto chatMessageDto, ChatRoomListGetResponse my) {
+        Long userId = chatMessageDto.getUserId();
+        Long partnerId;
+        if (my.getBuyerId() == userId) {
+            partnerId = my.getSellerId();
+        } else {
+            partnerId = my.getBuyerId();
+        }
+        return partnerId;
+    }
+
 
     /**
      * redis 에 채팅방 정보가 없는 경우 새로 저장.
      * @param chatMessage
-     * @param accessToken
      */
-    private void setNewChatRoomInfo(ChatMessageDto chatMessage, String accessToken) {
-
-        ChatRoomListGetResponse newChatRoomListResponse = null;
-
-        //레디스에 해당 채팅방이 저장이 안되어 있다면 추가해준다.
-
-        if (!chatRoomRedisRepository.existChatRoom(chatMessage.getUserId(), chatMessage.getRoomId())) {
-            newChatRoomListResponse = chatRoomService.getChatRoomInfo(accessToken, chatMessage.getRoomId());
-        } else {
-            newChatRoomListResponse = chatRoomRedisRepository.getChatRoom(chatMessage.getUserId(), chatMessage.getRoomId());
-        }
+    private void setNewChatRoomInfo(ChatMessageDto chatMessage, ChatRoomListGetResponse newChatRoomListResponse) {
 
         newChatRoomListResponse.updateChatMessageDto(chatMessage);
 
+
+        /** 상대방 채팅 리스트와 내 리스트 둘다 채팅방을 저장한다. */
+
         if (newChatRoomListResponse.getLoginUserIdentity().equals(UserIdentity.SELLER)) {
-            chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(), chatMessage.getRoomId(), newChatRoomListResponse);
-            newChatRoomListResponse.changePartnerInfo();
+            if (!chatMessage.getType().equals(MessageType.DELETE)) {
+                chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(),
+                        chatMessage.getRoomId(), newChatRoomListResponse);
+            }
+            newChatRoomListResponse.changePartnerInfo(); //닉네임 체인지
             chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(), chatMessage.getRoomId(), newChatRoomListResponse);
+
         } else {
-            chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(), chatMessage.getRoomId(), newChatRoomListResponse);
-            newChatRoomListResponse.changePartnerInfo();
+            if (!chatMessage.getType().equals(MessageType.DELETE)) {
+                chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(),
+                        chatMessage.getRoomId(), newChatRoomListResponse);
+            }
+            newChatRoomListResponse.changePartnerInfo(); //닉네임 체인지
             chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(), chatMessage.getRoomId(), newChatRoomListResponse);
         }
+
+        //다시 원상태로 복귀
+        newChatRoomListResponse.changePartnerInfo();
 
     }
 
