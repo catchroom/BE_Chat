@@ -46,7 +46,6 @@ public class ChatRoomRedisRepository {
 
     public void setChatRoomList(Long userId, List<ChatRoomListGetResponse> list) {
         String key = userId + CHAT_ROOM_LIST;
-        redisTemplate.expire(key, 1, TimeUnit.DAYS);
 
         listValueOperations = redisTemplate.opsForValue();
         listValueOperations.set(key, list);
