@@ -2,10 +2,13 @@ package com.catchroom.chat.chatroom.service;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.feign.client.MainFeignClient;
+import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.repository.ChatMessageRepository;
 import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
+import com.catchroom.chat.message.service.ChatMongoService;
+import com.catchroom.chat.message.service.ChatService;
 import com.catchroom.chat.message.type.MessageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,73 +26,64 @@ public class ChatRoomService {
     private final MainFeignClient mainFeignClient;
     private final ChatRoomRedisRepository chatRoomRedisRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatMongoService chatMongoService;
 
     public ChatRoomListGetResponse getChatRoomInfo(String accessToken, String roomId) {
         return mainFeignClient.getChatRoomInfo(accessToken, roomId);
     }
 
+    public List<ChatRoomListGetResponse> getChatRoomListByHttp(Long userId, String accessToken) {
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = getChatRoomList(userId, accessToken);
+        sortChatRoomListLatest(chatRoomListGetResponseList);
+        return chatRoomListGetResponseList;
+    }
 
-    public List<ChatRoomListGetResponse> getChatRoomListAccessToken(String accessToken) {
+
+    public List<ChatRoomListGetResponse> getChatRoomList(Long userId, String accessToken) {
         Long beforeTime = System.currentTimeMillis();
 
-        List<ChatRoomListGetResponse> chatRoomList = mainFeignClient.getChatRoomList(accessToken);
-        chatRoomList.forEach(this::recallLastMessage);
-        sortChatRoomListLatest(chatRoomList);
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = null;
+        if (chatRoomRedisRepository.existChatRoomList(userId)) {
+            chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
 
-        log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
+            log.info("YES ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
 
-
-        return chatRoomList;
-    }
-
-    public List<ChatRoomListGetResponse> getChatRoomList(
-            Long userId, String accessToken, MessageType type
-    ) {
-
-        List<ChatRoomListGetResponse> chatRoomList =
-                mainFeignClient.getChatRoomList(accessToken);
-
-//        Long beforeTime = System.currentTimeMillis();
-//
-//        Optional<List<ChatRoomListGetResponse>> chatRoomListOptional =
-//                chatRoomRedisRepository.getChatRoomList(userId);
-//
-//        List<ChatRoomListGetResponse> chatRoomList = null;
-//
-//        if (type.equals(MessageType.DELETE) || type.equals(MessageType.ENTER) ||
-//                chatRoomListOptional.isEmpty()) {
-//
-//            chatRoomList = mainFeignClient.getChatRoomList(accessToken);
-//            chatRoomRedisRepository.setChatRoomList(userId, chatRoomList);
-//
-//            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
-//
-//        } else {
-//            chatRoomList = chatRoomListOptional.get();
-//            log.info("ChatRoom have!!!! time : {}", System.currentTimeMillis() - beforeTime);
-//
-//        }
-
-        chatRoomList.forEach(this::recallLastMessage);
-        sortChatRoomListLatest(chatRoomList);
-        return chatRoomList;
-    }
-
-    private void recallLastMessage(ChatRoomListGetResponse chatRoomListGetResponse) {
-
-        String chatRoomNumber = chatRoomListGetResponse.getChatRoomNumber();
-
-        //최신 메세지가 레디스에 있는 경우
-        if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) != null) {
-            chatRoomListGetResponse.updateChatMessageDto(chatRoomRedisRepository.getLastMessage(chatRoomNumber));
+        } else {
+            // 채팅방이 레디스에 없으면 페인 사용해서 불러온다!
+            chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
+            chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
+            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
         }
 
-        //최신 메세지가 레디스에 없고 몽고디비에는 있는 경우
-        else if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) == null &&
-            !chatMessageRepository.findAllByRoomId(chatRoomNumber).isEmpty()
-        ) {
-            ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(chatRoomNumber).get(0);
-            chatRoomListGetResponse.updateChatMessageDto(ChatMessageDto.fromEntity(lastChatMessageMongo));
+        chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
+
+        log.info("Total Room List time : {}", System.currentTimeMillis() - beforeTime);
+
+        return chatRoomListGetResponseList;
+    }
+
+
+    /**
+     * 몽고 디비에서 마지막 메시지 가져와서 저장하는 로직
+     * @param chatRoomListGetResponse
+     */
+    private void setListChatLastMessage(ChatRoomListGetResponse chatRoomListGetResponse) {
+
+        // 몽고 디비에서 마지막 메시지 가져와서 저장.
+        String chatRoomNumber = chatRoomListGetResponse.getChatRoomNumber();
+
+        if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) != null) {
+            chatRoomListGetResponse.updateChatMessageDto(
+                    chatRoomRedisRepository.getLastMessage(chatRoomNumber)
+            );
+            return;
+        }
+
+        ChatMessage chatMessage = chatMongoService.findLatestMessageByRoomId(chatRoomNumber);
+        if (chatMessage != null) {
+            chatRoomListGetResponse.updateChatMessageDto(
+                    ChatMessageDto.fromEntity(chatMessage)
+            );
         }
 
     }
@@ -98,10 +92,11 @@ public class ChatRoomService {
      * 채팅방 마지막 메시지의 시간들을 비교하여 정렬하는 메소드
      * @param chatRoomListGetResponseList
      */
-    private void sortChatRoomListLatest (
+    public void sortChatRoomListLatest (
             List<ChatRoomListGetResponse> chatRoomListGetResponseList
     ) {
         Comparator<ChatRoomListGetResponse> comparator = (o1, o2) -> {
+
             if (o1.getLastChatmessageDto() != null && o2.getLastChatmessageDto() != null) {
                 return LocalDateTime.parse(o2.getLastChatmessageDto().getTime()).withNano(0)
                         .compareTo(
@@ -114,5 +109,18 @@ public class ChatRoomService {
 
         Collections.sort(chatRoomListGetResponseList,comparator);
     }
+
+    /**
+     * 채팅방 삭제 로직
+     * @param accessToken
+     * @param roomId
+     */
+    public void deleteChatRoom(String accessToken, String roomId, Long userId) {
+        log.info("=>> 채팅방 삭제 {} start ", roomId);
+        SuccessMessage message = mainFeignClient.deleteChatRoom(accessToken, roomId);
+        chatRoomRedisRepository.deleteChatRoom(userId, roomId);
+        log.info("=>> 채팅방 삭제 {} Msg : {}", roomId, message.Meassage());
+    }
+
 
 }

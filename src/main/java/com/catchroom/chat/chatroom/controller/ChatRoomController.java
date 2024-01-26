@@ -17,9 +17,10 @@ public class ChatRoomController {
 
     @GetMapping("/list")
     public List<ChatRoomListGetResponse> getChatRoomList(
-        @RequestHeader("Authorization") String accessToken
+        @RequestHeader("Authorization") String accessToken,
+        @RequestParam(name = "userId") Long userId
     ) {
-        return chatRoomService.getChatRoomListAccessToken(accessToken);
+        return chatRoomService.getChatRoomListByHttp(userId, accessToken);
     }
 
 
@@ -31,13 +32,6 @@ public class ChatRoomController {
         return chatRoomService.getChatRoomInfo(accessToken, roomId);
     }
 
-
-    @GetMapping("/list/test")
-    public List<ChatRoomListGetResponse> getChatRoomListTest(
-            @RequestHeader("Authorization") String accessToken
-    ) {
-        return chatRoomService.getChatRoomList(4L, accessToken, MessageType.TALK);
-    }
 
 
 }
