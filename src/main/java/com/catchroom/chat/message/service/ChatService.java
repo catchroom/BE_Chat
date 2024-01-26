@@ -94,6 +94,7 @@ public class ChatService {
 
             setLastMessage(list);
 
+            log.error("init message : {}, userId : {}", chatMessage.getMessage(), chatMessage.getUserId());
             chatRoomRedisRepository.initChatRoomList(chatMessage.getUserId(), list);
         }
     }
