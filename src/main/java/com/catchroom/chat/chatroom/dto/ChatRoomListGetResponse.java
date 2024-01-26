@@ -31,6 +31,8 @@ public class ChatRoomListGetResponse implements Serializable {
 
     private String accommodationUrl;
 
+    private String myNickName;
+
     private String partnerNickName;
 
     private DealState dealState;
@@ -44,5 +46,17 @@ public class ChatRoomListGetResponse implements Serializable {
 
     public void updateChatMessageDto(ChatMessageDto chatMessageDto) {
         this.lastChatmessageDto = chatMessageDto;
+    }
+
+    public void changePartnerInfo() {
+        String tmp = myNickName;
+        this.myNickName = partnerNickName;
+        this.partnerNickName = tmp;
+
+        if (loginUserIdentity.equals(UserIdentity.SELLER)) {
+            this.loginUserIdentity = UserIdentity.BUYER;
+        } else if (loginUserIdentity.equals(UserIdentity.BUYER)) {
+            this.loginUserIdentity = UserIdentity.SELLER;
+        }
     }
 }

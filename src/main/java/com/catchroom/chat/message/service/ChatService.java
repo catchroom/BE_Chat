@@ -11,6 +11,7 @@ import com.catchroom.chat.message.entity.ChatMessage;
 import com.catchroom.chat.message.repository.ChatMessageRepository;
 import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.type.MessageType;
+import com.catchroom.chat.message.type.UserIdentity;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,7 +54,7 @@ public class ChatService {
                 chatMessage.getUserId(), accessToken
         );
 
-        // 2. 채팅방 리스트에 새로운 채팅방 정보가 없다면, 넣어준다. 마지막 메시지도 같이 담는다.
+        // 2. 채팅방 리스트에 새로운 채팅방 정보가 없다면, 넣어준다. 마지막 메시지도 같이 담는다. 상대방 레디스에도 업데이트 해준다.
         setNewChatRoomInfo(chatMessage, accessToken);
 
         // 3. 채팅방이 삭제되는 것이라면 delete 를 해준다.
@@ -87,7 +88,6 @@ public class ChatService {
 
         //레디스에 해당 채팅방이 저장이 안되어 있다면 추가해준다.
 
-
         if (!chatRoomRedisRepository.existChatRoom(chatMessage.getUserId(), chatMessage.getRoomId())) {
             newChatRoomListResponse = chatRoomService.getChatRoomInfo(accessToken, chatMessage.getRoomId());
         } else {
@@ -96,8 +96,15 @@ public class ChatService {
 
         newChatRoomListResponse.updateChatMessageDto(chatMessage);
 
-        chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(), chatMessage.getRoomId(), newChatRoomListResponse);
-        chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(), chatMessage.getRoomId(), newChatRoomListResponse);
+        if (newChatRoomListResponse.getLoginUserIdentity().equals(UserIdentity.SELLER)) {
+            chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(), chatMessage.getRoomId(), newChatRoomListResponse);
+            newChatRoomListResponse.changePartnerInfo();
+            chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(), chatMessage.getRoomId(), newChatRoomListResponse);
+        } else {
+            chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(), chatMessage.getRoomId(), newChatRoomListResponse);
+            newChatRoomListResponse.changePartnerInfo();
+            chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(), chatMessage.getRoomId(), newChatRoomListResponse);
+        }
 
     }
 
