@@ -47,19 +47,37 @@ public class ChatService {
      */
     public void sendChatMessage(ChatMessageDto chatMessage, String accessToken) {
 
-        chatRoomRedisRepository.setLastChatMessage(chatMessage.getRoomId(), chatMessage);
+        Long before = System.currentTimeMillis();
 
+        // 1. redis 에 채팅방이 없으면, 레디스에 리스트를 먼저 넣어준다.
+        initIfChatRoomAbsent(chatMessage, accessToken);
+
+        // 2. 새로운 채팅방 정보가 없다면, 넣어준다.
+        setNewChatRoomInfo(chatMessage, accessToken);
+
+        // 3. 채팅방에 마지막 메시지를 넣어준다.
+        setRedisChatMessage(chatMessage);
+
+        // 4. 채팅방이 삭제되는 것이라면 delete를 해준다.
         if (chatMessage.getType().equals(MessageType.DELETE)) {
+            chatRoomRedisRepository.deleteChatRoom(chatMessage.getUserId(), chatMessage.getRoomId());
             deleteChatRoom(accessToken, chatMessage.getRoomId());
         }
 
+        // 5. 채팅방 정보 업데이트
         List<ChatRoomListGetResponse> chatRoomListGetResponseList =
-            chatRoomService.getChatRoomList(chatMessage.getUserId(), accessToken, chatMessage.getType());
+            chatRoomRedisRepository.getChatRoomList(chatMessage.getUserId());
+
+        // 6. 마지막 메세지 기준으로 정렬
+        sortChatRoomListLatest(chatRoomListGetResponseList);
 
         MessageSubDto messageSubDto = MessageSubDto.builder()
             .chatMessageDto(chatMessage)
             .list(chatRoomListGetResponseList)
             .build();
+
+        Long after = System.currentTimeMillis() - before;
+        log.info("message Time : {}", after);
 
         redisPublisher.publish(messageSubDto);
     }
@@ -137,10 +155,12 @@ public class ChatService {
             String chatRoomNumber = chatRoomListGetResponse.getChatRoomNumber();
 
             if (chatRoomListGetResponse.getLastChatmessageDto() == null) {
-                ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(
-                        chatRoomNumber).get(0);
-                chatRoomListGetResponse.updateChatMessageDto(
-                        ChatMessageDto.fromEntity(lastChatMessageMongo));
+                if (chatMessageRepository.findAllByRoomId(chatRoomNumber) != null) {
+                    ChatMessage lastChatMessageMongo = chatMessageRepository.findAllByRoomId(
+                            chatRoomNumber).get(0);
+                    chatRoomListGetResponse.updateChatMessageDto(
+                            ChatMessageDto.fromEntity(lastChatMessageMongo));
+                }
             }
         }
 
