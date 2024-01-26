@@ -12,6 +12,9 @@ import java.util.List;
 @Setter
 @Builder
 public class MessageSubDto implements Serializable {
+    private Long userId;
+    private Long partnerId;
     private ChatMessageDto chatMessageDto;
     private List<ChatRoomListGetResponse> list;
+    private List<ChatRoomListGetResponse> partnerList;
 }
