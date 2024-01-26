@@ -68,7 +68,8 @@ public class ChatService {
         List<ChatRoomListGetResponse> chatRoomListGetResponseList =
             chatRoomRedisRepository.getChatRoomList(chatMessage.getUserId());
 
-        // 6. 마지막 메세지 기준으로 정렬
+        // 6. 마지막 메시지들 저장 후  마지막 메세지 기준으로 정렬
+        setLastMessage(chatRoomListGetResponseList);
         sortChatRoomListLatest(chatRoomListGetResponseList);
 
         MessageSubDto messageSubDto = MessageSubDto.builder()
@@ -91,8 +92,6 @@ public class ChatService {
         if (!chatRoomRedisRepository.existChatRoomList(chatMessage.getUserId())) {
             List<ChatRoomListGetResponse> list =
                     chatRoomService.getChatRoomListAccessToken(accessToken);
-
-            setLastMessage(list);
 
             log.error("init message : {}, userId : {}", chatMessage.getMessage(), chatMessage.getUserId());
             chatRoomRedisRepository.initChatRoomList(chatMessage.getUserId(), list);
