@@ -2,16 +2,25 @@ package com.catchroom.chat.message.repository;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /** redis 와 관련된 메소드들 */
 
@@ -25,6 +34,11 @@ public class ChatRoomRedisRepository {
 
     private static final String CHAT_ROOM_LIST = "_CHAT_ROOM_LIST";
 
+    private static final String CHAT_ROOM_KEY = "_CHAT_ROOM_RESPONSE_LIST";
+
+
+    private final ObjectMapper objectMapper;
+
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -32,7 +46,51 @@ public class ChatRoomRedisRepository {
     private ValueOperations<String, Object> listValueOperations;
 
     @Resource(name = "redisTemplate")
+    private HashOperations<String, String, ChatRoomListGetResponse> opsHashChatRoom;
+
+    @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatMessageDto> opsHashLastChatMessage;
+
+
+    private String getChatRoomKey(Long userId) {
+        return userId + CHAT_ROOM_KEY;
+    }
+
+    public boolean existChatRoomList(Long userId) {
+        return redisTemplate.hasKey(getChatRoomKey(userId));
+    }
+
+    public void initChatRoomList(Long userId, List<ChatRoomListGetResponse> list) {
+        if (redisTemplate.hasKey(getChatRoomKey(userId))) {
+            redisTemplate.delete(getChatRoomKey(userId));
+        }
+
+        opsHashChatRoom = redisTemplate.opsForHash();
+        for (ChatRoomListGetResponse chatRoomListGetRes : list) {
+            setChatRoom(userId, chatRoomListGetRes.getChatRoomNumber(), chatRoomListGetRes);
+        }
+
+    }
+
+    public void setChatRoom(Long userId, String roomId, ChatRoomListGetResponse response) {
+        opsHashChatRoom.put(getChatRoomKey(userId), roomId, response);
+    }
+
+    public boolean existChatRoom(Long userId, String roomId) {
+        return opsHashChatRoom.hasKey(getChatRoomKey(userId), roomId);
+    }
+
+    public void deleteChatRoom(Long userId, String roomId) {
+        opsHashChatRoom.delete(getChatRoomKey(userId), roomId);
+    }
+
+    public ChatRoomListGetResponse getChatRoom(Long userId, String roomId) {
+        return opsHashChatRoom.get(getChatRoomKey(userId), roomId);
+    }
+
+    public List<ChatRoomListGetResponse> getChatRoomList(Long userId) {
+        return opsHashChatRoom.values(getChatRoomKey(userId));
+    }
 
 
     public void setLastChatMessage(String roomId, ChatMessageDto chatMessageDto) {
@@ -46,28 +104,11 @@ public class ChatRoomRedisRepository {
 
     public void setChatRoomList(Long userId, List<ChatRoomListGetResponse> list) {
         String key = userId + CHAT_ROOM_LIST;
-        redisTemplate.expire(key, 1, TimeUnit.DAYS);
+        redisTemplate.expire(key, 1, TimeUnit.MINUTES);
 
         listValueOperations = redisTemplate.opsForValue();
         listValueOperations.set(key, list);
     }
-
-
-    public List<ChatRoomListGetResponse> getChatRoomList(Long userId) {
-        String key = userId + CHAT_ROOM_LIST;
-        return (List<ChatRoomListGetResponse>) listValueOperations.get(key);
-    }
-
-
-    /**
-     * 채팅방 최신화가 필요한 순간
-     * 1. 새로운 사람한테 채팅이 오는 순간
-     * 2. 채팅방이 삭제되는 순간
-     *
-     * redis 에 key : userId_chat_room_list, value : list<ChatRoomListGetResponse>
-     * expire (만료기간) : 하루
-     *
-     */
 
 
 
