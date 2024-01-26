@@ -47,6 +47,8 @@ public class ChatService {
      */
     public void sendChatMessage(ChatMessageDto chatMessage, String accessToken) {
 
+
+
         Long before = System.currentTimeMillis();
 
         List<ChatRoomListGetResponse> list = null;

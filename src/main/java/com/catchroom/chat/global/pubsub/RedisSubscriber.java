@@ -1,6 +1,5 @@
 package com.catchroom.chat.global.pubsub;
 
-
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.dto.MessageSubDto;
