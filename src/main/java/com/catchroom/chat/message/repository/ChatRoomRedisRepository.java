@@ -2,9 +2,7 @@ package com.catchroom.chat.message.repository;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import java.util.Arrays;
@@ -37,6 +35,8 @@ public class ChatRoomRedisRepository {
 
 
     private final RedisTemplate<String, Object> redisTemplate;
+
+    private final ObjectMapper objectMapper;
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatRoomListGetResponse> opsHashChatRoom;
@@ -78,11 +78,11 @@ public class ChatRoomRedisRepository {
     }
 
     public ChatRoomListGetResponse getChatRoom(Long userId, String roomId) {
-        return opsHashChatRoom.get(getChatRoomKey(userId), roomId);
+        return objectMapper.convertValue(opsHashChatRoom.get(getChatRoomKey(userId), roomId), ChatRoomListGetResponse.class);
     }
 
     public List<ChatRoomListGetResponse> getChatRoomList(Long userId) {
-        return opsHashChatRoom.values(getChatRoomKey(userId));
+        return objectMapper.convertValue(opsHashChatRoom.values(getChatRoomKey(userId)), new TypeReference<>() {});
     }
 
 
@@ -91,7 +91,7 @@ public class ChatRoomRedisRepository {
     }
 
     public ChatMessageDto getLastMessage(String roomId) {
-        return opsHashLastChatMessage.get(CHAT_ROOM, roomId);
+        return objectMapper.convertValue(opsHashLastChatMessage.get(CHAT_ROOM, roomId), ChatMessageDto.class);
     }
 
 

@@ -43,6 +43,8 @@ public class ChatRoomListGetResponse implements Serializable {
 
     private ChatMessageDto lastChatmessageDto;
 
+    private Boolean isNego;
+
 
     public void updateChatMessageDto(ChatMessageDto chatMessageDto) {
         this.lastChatmessageDto = chatMessageDto;
@@ -53,10 +55,31 @@ public class ChatRoomListGetResponse implements Serializable {
         this.myNickName = partnerNickName;
         this.partnerNickName = tmp;
 
-        if (loginUserIdentity.equals(UserIdentity.SELLER)) {
+        if (this.loginUserIdentity.equals(UserIdentity.SELLER)) {
             this.loginUserIdentity = UserIdentity.BUYER;
-        } else if (loginUserIdentity.equals(UserIdentity.BUYER)) {
+        } else if (this.loginUserIdentity.equals(UserIdentity.BUYER)) {
             this.loginUserIdentity = UserIdentity.SELLER;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ChatRoomListGetResponse{" +
+                "chatRoomNumber='" + chatRoomNumber + '\'' +
+                ", buyerId=" + buyerId +
+                ", sellerId=" + sellerId +
+                ", productId=" + productId +
+                ", accommodationName='" + accommodationName + '\'' +
+                ", sellPrice=" + sellPrice +
+                ", loginUserIdentity=" + loginUserIdentity +
+                ", accommodationUrl='" + accommodationUrl + '\'' +
+                ", myNickName='" + myNickName + '\'' +
+                ", partnerNickName='" + partnerNickName + '\'' +
+                ", dealState=" + dealState +
+                ", buyerState=" + buyerState +
+                ", sellerState=" + sellerState +
+                ", lastChatmessageDto=" + lastChatmessageDto +
+                ", isNego=" + isNego +
+                '}';
     }
 }
