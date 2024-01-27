@@ -11,6 +11,7 @@ import com.catchroom.chat.message.service.ChatMongoService;
 import com.catchroom.chat.message.service.ChatService;
 import com.catchroom.chat.message.type.MessageType;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -109,19 +110,17 @@ public class ChatRoomService {
     public void sortChatRoomListLatest (
             List<ChatRoomListGetResponse> chatRoomListGetResponseList
     ) {
-        Comparator<ChatRoomListGetResponse> comparator = (o1, o2) -> {
+        chatRoomListGetResponseList = chatRoomListGetResponseList.stream()
+                .filter(it -> it.getLastChatmessageDto() != null)
+                .collect(Collectors.toList());
 
-            if (o1.getLastChatmessageDto() != null && o2.getLastChatmessageDto() != null) {
-                return LocalDateTime.parse(o2.getLastChatmessageDto().getTime()).withNano(0)
-                        .compareTo(
-                                LocalDateTime.parse(o1.getLastChatmessageDto().getTime()).withNano(0)
-                        );
-            } else {
-                return 0;
-            }
-        };
+        Comparator<ChatRoomListGetResponse> comparator = (o1, o2) ->
+                LocalDateTime.parse(o2.getLastChatmessageDto().getTime()).withNano(0)
+                    .compareTo(
+                            LocalDateTime.parse(o1.getLastChatmessageDto().getTime()).withNano(0)
+                    );
 
-        Collections.sort(chatRoomListGetResponseList,comparator);
+        Collections.sort(chatRoomListGetResponseList, comparator);
     }
 
     /**
