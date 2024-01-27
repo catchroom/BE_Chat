@@ -120,7 +120,7 @@ public class ChatRoomService {
                             LocalDateTime.parse(o1.getLastChatmessageDto().getTime()).withNano(0)
                     );
 
-        Collections.sort(chatRoomListGetResponseList,comparator);
+        Collections.sort(chatRoomListGetResponseList, comparator);
     }
 
     /**
