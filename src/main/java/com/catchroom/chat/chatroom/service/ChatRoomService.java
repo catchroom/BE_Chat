@@ -38,7 +38,7 @@ public class ChatRoomService {
         List<ChatRoomListGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
         chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
         chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
-        sortChatRoomListLatest(chatRoomListGetResponseList);
+        chatRoomListGetResponseList = sortChatRoomListLatest(chatRoomListGetResponseList);
         return chatRoomListGetResponseList;
     }
 
@@ -107,20 +107,18 @@ public class ChatRoomService {
      * 채팅방 마지막 메시지의 시간들을 비교하여 정렬하는 메소드
      * @param chatRoomListGetResponseList
      */
-    public void sortChatRoomListLatest (
+    public List<ChatRoomListGetResponse> sortChatRoomListLatest (
             List<ChatRoomListGetResponse> chatRoomListGetResponseList
     ) {
-        chatRoomListGetResponseList = chatRoomListGetResponseList.stream()
-                .filter(it -> it.getLastChatmessageDto() != null)
-                .collect(Collectors.toList());
+        List<ChatRoomListGetResponse> newChatRoomList = new ArrayList<>();
+        for (ChatRoomListGetResponse response : chatRoomListGetResponseList) {
+            if (response.getLastChatmessageDto() != null) newChatRoomList.add(response);
+        }
 
-        Comparator<ChatRoomListGetResponse> comparator = (o1, o2) ->
-                LocalDateTime.parse(o2.getLastChatmessageDto().getTime()).withNano(0)
-                    .compareTo(
-                            LocalDateTime.parse(o1.getLastChatmessageDto().getTime()).withNano(0)
-                    );
+        Collections.sort(newChatRoomList, (o1, o2) ->
+                o2.getLastChatmessageDto().getTime().compareTo(o1.getLastChatmessageDto().getTime()));
 
-        Collections.sort(chatRoomListGetResponseList, comparator);
+        return newChatRoomList;
     }
 
     /**

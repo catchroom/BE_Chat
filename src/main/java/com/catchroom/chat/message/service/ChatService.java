@@ -75,8 +75,8 @@ public class ChatService {
 
 
         // 5. 마지막 메세지 기준으로 정렬 채팅방 리스트 정렬
-        chatRoomService.sortChatRoomListLatest(chatRoomListGetResponseList);
-        chatRoomService.sortChatRoomListLatest(partnerChatRoomGetResponseList);
+        chatRoomListGetResponseList = chatRoomService.sortChatRoomListLatest(chatRoomListGetResponseList);
+        partnerChatRoomGetResponseList = chatRoomService.sortChatRoomListLatest(partnerChatRoomGetResponseList);
 
 
         MessageSubDto messageSubDto = MessageSubDto.builder()
