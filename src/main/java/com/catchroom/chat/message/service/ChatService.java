@@ -124,11 +124,12 @@ public class ChatService {
             newChatRoomListResponse.changePartnerInfo(); //닉네임 체인지
             chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(), chatMessage.getRoomId(), newChatRoomListResponse);
 
-        } else {
+        } else if (newChatRoomListResponse.getLoginUserIdentity().equals(UserIdentity.BUYER)){
             if (!chatMessage.getType().equals(MessageType.DELETE)) {
                 chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getBuyerId(),
                         chatMessage.getRoomId(), newChatRoomListResponse);
             }
+
             newChatRoomListResponse.changePartnerInfo(); //닉네임 체인지
             chatRoomRedisRepository.setChatRoom(newChatRoomListResponse.getSellerId(), chatMessage.getRoomId(), newChatRoomListResponse);
         }
