@@ -69,6 +69,7 @@ public class ChatService {
         // 2. 채팅방 리스트에 새로운 채팅방 정보가 없다면, 넣어준다. 마지막 메시지도 같이 담는다. 상대방 레디스에도 업데이트 해준다.
         setNewChatRoomInfo(chatMessage, newChatRoomListResponse);
 
+
         // 3. 마지막 메시지들이 담긴 채팅방 리스트들을 가져온다. // 4. 파트너 채팅방 리스트도 가져온다. (파트너는 userId 로만)
         List<ChatRoomListGetResponse> chatRoomListGetResponseList = chatRoomService.getChatRoomList(userId, accessToken);
         List<ChatRoomListGetResponse> partnerChatRoomGetResponseList = chatRoomService.getChatRoomListByUserId(partnerId);

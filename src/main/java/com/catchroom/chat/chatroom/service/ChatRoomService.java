@@ -35,10 +35,15 @@ public class ChatRoomService {
 
     public List<ChatRoomListGetResponse> getChatRoomListByHttp(Long userId, String accessToken) {
         // 처음 HTTP 요청에서는 무조건 레디스 초기화 진행하도록 로직 수정
+
         List<ChatRoomListGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
+
         chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
+
         chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
+
         chatRoomListGetResponseList = sortChatRoomListLatest(chatRoomListGetResponseList);
+
         return chatRoomListGetResponseList;
     }
 
@@ -71,8 +76,6 @@ public class ChatRoomService {
         }
 
         chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
-
-        log.info("Total Room List time : {}", System.currentTimeMillis() - beforeTime);
 
         return chatRoomListGetResponseList;
     }
@@ -110,13 +113,15 @@ public class ChatRoomService {
     public List<ChatRoomListGetResponse> sortChatRoomListLatest (
             List<ChatRoomListGetResponse> chatRoomListGetResponseList
     ) {
+
         List<ChatRoomListGetResponse> newChatRoomList = new ArrayList<>();
         for (ChatRoomListGetResponse response : chatRoomListGetResponseList) {
             if (response.getLastChatmessageDto() != null) newChatRoomList.add(response);
         }
 
         Collections.sort(newChatRoomList, (o1, o2) ->
-                o2.getLastChatmessageDto().getTime().compareTo(o1.getLastChatmessageDto().getTime()));
+                o2.getLastChatmessageDto().getTime().compareTo(o1.getLastChatmessageDto().getTime())
+        );
 
         return newChatRoomList;
     }
