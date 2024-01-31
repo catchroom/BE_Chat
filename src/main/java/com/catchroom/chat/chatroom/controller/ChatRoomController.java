@@ -2,10 +2,9 @@ package com.catchroom.chat.chatroom.controller;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
-import com.catchroom.chat.message.type.MessageType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController

@@ -5,20 +5,14 @@ import com.catchroom.chat.feign.client.MainFeignClient;
 import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.entity.ChatMessage;
-import com.catchroom.chat.message.repository.ChatMessageRepository;
 import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.service.ChatMongoService;
-import com.catchroom.chat.message.service.ChatService;
-import com.catchroom.chat.message.type.MessageType;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
