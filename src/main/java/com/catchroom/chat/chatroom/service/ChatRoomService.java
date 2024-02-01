@@ -55,18 +55,16 @@ public class ChatRoomService {
         if (chatRoomRedisRepository.existChatRoomList(userId)) {
             chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
 
-            log.info("YES ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
+//            log.info("YES ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
 
         } else {
             // 채팅방이 레디스에 없으면 페인 사용해서 불러온다!
             chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
             chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
-            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
+//            log.info("NOT ChatRoom!!!!! time : {}", System.currentTimeMillis() - beforeTime);
         }
 
         chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
-
-        log.info("Total Room List time : {}", System.currentTimeMillis() - beforeTime);
 
         return chatRoomListGetResponseList;
     }
