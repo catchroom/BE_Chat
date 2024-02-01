@@ -28,7 +28,7 @@ public class RedisSubscriber {
             ChatMessageDto chatMessage =
                     objectMapper.readValue(publishMessage, MessageSubDto.class).getChatMessageDto();
 
-            log.info("Redis Subcriber MSG publishMsg : {}", chatMessage.getMessage());
+            log.info("Redis Subcriber chatMSG : {}", chatMessage.getMessage());
 
             // 채팅방을 구독한 클라이언트에게 메시지 발송
             messagingTemplate.convertAndSend(
@@ -42,7 +42,7 @@ public class RedisSubscriber {
 
     public void sendRoomList(String publishMessage) {
         try {
-            log.info("Redis Subcriber room publishMsg ing.. ");
+            log.info("Redis Subcriber roomList ing.. ");
 
             MessageSubDto dto = objectMapper.readValue(publishMessage, MessageSubDto.class);
 
