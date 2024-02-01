@@ -5,37 +5,27 @@ import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 /** redis 와 관련된 메소드들 */
 
 
-@Service
+@Repository
 @RequiredArgsConstructor
 @Slf4j
 public class ChatRoomRedisRepository {
 
     private static final String CHAT_ROOM_KEY = "_CHAT_ROOM_RESPONSE_LIST";
-
     private static final String CHAT_ROOM = "CHAT_ROOM_LAST_MSG"; //채팅방 마지막 메시지 저장
-
-
-
     private final RedisTemplate<String, Object> redisTemplate;
-
     private final ObjectMapper objectMapper;
 
     @Resource(name = "redisTemplate")
