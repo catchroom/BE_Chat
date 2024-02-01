@@ -1,9 +1,6 @@
 package com.catchroom.chat.message.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;

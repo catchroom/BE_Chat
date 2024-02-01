@@ -5,15 +5,13 @@ import com.catchroom.chat.chatroom.type.DealState;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.type.UserIdentity;
 import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ChatRoomListGetResponse implements Serializable {
     private String chatRoomNumber;
 

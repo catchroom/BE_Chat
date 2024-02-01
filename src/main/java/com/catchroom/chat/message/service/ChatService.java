@@ -2,19 +2,13 @@ package com.catchroom.chat.message.service;
 
 import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
-import com.catchroom.chat.feign.client.MainFeignClient;
-import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.global.pubsub.RedisPublisher;
 import com.catchroom.chat.message.dto.MessageSubDto;
-import com.catchroom.chat.message.entity.ChatMessage;
-import com.catchroom.chat.message.repository.ChatMessageRepository;
 import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.type.MessageType;
 import com.catchroom.chat.message.type.UserIdentity;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
