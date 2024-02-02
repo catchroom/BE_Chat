@@ -80,21 +80,19 @@ public class ChatRoomService {
 
         // 몽고 디비에서 마지막 메시지 가져와서 저장.
         String chatRoomNumber = chatRoomListGetResponse.getChatRoomNumber();
-
+        //TODO 레디스에 마지막 메세지가 없으면??
         if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) != null) {
             chatRoomListGetResponse.updateChatMessageDto(
-                    chatRoomRedisRepository.getLastMessage(chatRoomNumber)
+                chatRoomRedisRepository.getLastMessage(chatRoomNumber)
             );
-            return;
-        }
-
-        ChatMessage chatMessage = chatMongoService.findLatestMessageByRoomId(chatRoomNumber);
-        if (chatMessage != null) {
-            chatRoomListGetResponse.updateChatMessageDto(
+        } else {
+            ChatMessage chatMessage = chatMongoService.findLatestMessageByRoomId(chatRoomNumber);
+            if (chatMessage != null) {
+                chatRoomListGetResponse.updateChatMessageDto(
                     ChatMessageDto.fromEntity(chatMessage)
-            );
+                );
+            }
         }
-
     }
 
     /**
