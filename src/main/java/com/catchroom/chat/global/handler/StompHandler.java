@@ -24,6 +24,9 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         if (StompCommand.SUBSCRIBE == accessor.getCommand()) { // 채팅룸 구독요청
 
+            String sessionId = (String) message.getHeaders().get("simpSessionId");
+            log.info("Websocket CONNECT simpSessionId : {}", sessionId);
+
             /** 일단 코드 나중에 쓰일 수 있으니 전부 주석처리 함 */
 
             // header 정보에서 구독 destination 정보를 얻고, roomId를 추출한다. destination = uri
@@ -33,8 +36,6 @@ public class StompHandler implements ChannelInterceptor {
 //            );
 
             // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
-//            String sessionId = (String) message.getHeaders().get("simpSessionId");
-//            log.info("simpSessionId : {}", sessionId);
 //            chatRoomRepository.setUserEnterInfo(sessionId, roomId);
 //
 //            // 채팅방의 인원수를 +1한다.
