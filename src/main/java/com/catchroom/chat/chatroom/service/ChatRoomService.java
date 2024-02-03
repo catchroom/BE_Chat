@@ -32,20 +32,10 @@ public class ChatRoomService {
         List<ChatRoomListGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
         chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
         chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
-        chatRoomListGetResponseList = sortChatRoomListLatest(chatRoomListGetResponseList);
-        return chatRoomListGetResponseList;
+        return sortChatRoomListLatest(chatRoomListGetResponseList);
     }
 
-    public List<ChatRoomListGetResponse> getChatRoomListByUserId(Long userId) {
-        List<ChatRoomListGetResponse> chatRoomListGetResponseList = new ArrayList<>();
 
-        if (chatRoomRedisRepository.existChatRoomList(userId)) {
-            chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
-            chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
-        }
-
-        return chatRoomListGetResponseList;
-    }
 
 
     public List<ChatRoomListGetResponse> getChatRoomList(Long userId, String accessToken) {
@@ -74,7 +64,7 @@ public class ChatRoomService {
      * 몽고 디비에서 마지막 메시지 가져와서 저장하는 로직
      * @param chatRoomListGetResponse
      */
-    private void setListChatLastMessage(ChatRoomListGetResponse chatRoomListGetResponse) {
+    public void setListChatLastMessage(ChatRoomListGetResponse chatRoomListGetResponse) {
 
         // 몽고 디비에서 마지막 메시지 가져와서 저장.
         String chatRoomNumber = chatRoomListGetResponse.getChatRoomNumber();
