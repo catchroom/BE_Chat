@@ -9,6 +9,7 @@ import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.type.MessageType;
 import com.catchroom.chat.message.type.UserIdentity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,7 @@ public class ChatService {
 
         // 3. 마지막 메시지들이 담긴 채팅방 리스트들을 가져온다. // 4. 파트너 채팅방 리스트도 가져온다. (파트너는 userId 로만)
         List<ChatRoomListGetResponse> chatRoomListGetResponseList = chatRoomService.getChatRoomList(userId, accessToken);
-        List<ChatRoomListGetResponse> partnerChatRoomGetResponseList = chatRoomService.getChatRoomListByUserId(partnerId);
+        List<ChatRoomListGetResponse> partnerChatRoomGetResponseList = getChatRoomListByUserId(partnerId);
 
 
         // 5. 마지막 메세지 기준으로 정렬 채팅방 리스트 정렬
@@ -131,6 +132,21 @@ public class ChatService {
         //다시 원상태로 복귀
         newChatRoomListResponse.changePartnerInfo();
 
+    }
+
+    // redis에서 채팅방 리스트 불러오는 로직
+    private List<ChatRoomListGetResponse> getChatRoomListByUserId(Long userId) {
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = new ArrayList<>();
+
+        if (chatRoomRedisRepository.existChatRoomList(userId)) {
+            chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
+            for (ChatRoomListGetResponse chatRoomListGetResponse : chatRoomListGetResponseList) {
+                chatRoomService.setListChatLastMessage(chatRoomListGetResponse);
+            }
+        }
+
+
+        return chatRoomListGetResponseList;
     }
 
 
