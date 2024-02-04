@@ -1,7 +1,7 @@
 # 파이널 프로젝트 : 무료 예약 취소 불가한 숙소의 양도/거래 서비스
 
-<div align="center">
-  <img width="500" alt="image" src="https://github.com/catchroom/BE_CatchRoom/assets/114489245/94228459-9aef-4069-975d-bee133b5c7c2">
+<div align="center"> <br>
+  <img width="300" alt="image" src="https://github.com/catchroom/BE_CatchRoom/assets/114489245/94228459-9aef-4069-975d-bee133b5c7c2">
 
 <br><br>
 
@@ -14,7 +14,8 @@
 
 ## 🏗 아키텍처 
 
-<img width = "1694" alt = "image" src = "https://github.com/catchroom/BE_CatchRoom/assets/59862752/99ca8b8b-a105-4568-8155-27ce501d77d1">
+<img width = "1694" alt = "image" src = "https://github.com/catchroom/BE_Chat/assets/59862752/ba80c9a5-fb49-484c-953f-b2c31850bf9b">
+
 
 <br><br><br>
 
