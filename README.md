@@ -1,4 +1,4 @@
-# 파이널 프로젝트 : 무료 예약 취소 불가한 숙소의 양도/거래 서비스
+# 파이널 프로젝트 : 무료 예약 취소 불가한 숙소의 양도/거래 서비스 - 채팅 Repo
 
 <div align="center"> <br>
   <img width="300" alt="image" src="https://github.com/catchroom/BE_CatchRoom/assets/114489245/94228459-9aef-4069-975d-bee133b5c7c2">
@@ -14,21 +14,22 @@
 
 ## 🏗 아키텍처 
 
-<img width = "1694" alt = "image" src = "https://github.com/catchroom/BE_Chat/assets/59862752/ba80c9a5-fb49-484c-953f-b2c31850bf9b">
+<img width = "1600" alt = "image" src = "https://github.com/catchroom/BE_Chat/assets/59862752/ba80c9a5-fb49-484c-953f-b2c31850bf9b">
 
 
 <br><br><br>
 
-## 🎢 서비스 실행 링크
+## 🎢 메인 Repo
 
-- [CatchRoom 서비스 실행 링크](https://dev.dhlbrqe2v28e4.amplifyapp.com/home)
 - [백엔드 메인 서버 Repo](https://github.com/catchroom/BE_Catchroom)
 
 <br><br><br>
 
-## 📹 서비스 화면 
+## 📹 서비스 스크린샷 
 
 ![채팅 무한스크롤](https://github.com/catchroom/BE_Chat/assets/59862752/df3d7a75-9b0b-477d-b802-60466b9a9a94)
+
+<br><br>
 
 ## 💡 프로젝트 주제
 
@@ -54,6 +55,8 @@
 > 2. 스프링부트 버전 : 3.1.6
 > 3. 빌드 & 빌드 도구 : Gradle
 > 4. Git 브랜치 전략 : Feature Branch → Develop Branch → Main Branch
+
+<br><br>
 
 ## 🛠️ 기술 스택
 #### Framework
@@ -91,6 +94,15 @@
 ![codeDeploy](https://img.shields.io/badge/AWS_codeDeploy-41AD48.svg?style=for-the-badge&logo=codeblocks&logoColor=white)
 ![codeDeploy](https://img.shields.io/badge/AWS_elasticcache-4053D6.svg?style=for-the-badge&logo=amazonaws&logoColor=white)
 ![docker](https://img.shields.io/badge/docker-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
+
+<br>
+
+## 📽️ 프로젝트 영상
+
+
+
+https://github.com/catchroom/BE_Chat/assets/59862752/bb7011ac-e58a-4151-8b17-8fa8bc76e525
+
 
 
 
