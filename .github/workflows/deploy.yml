@@ -52,3 +52,4 @@ jobs:
             sudo docker stop prod2
             sudo docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
             docker-compose up -d
+
