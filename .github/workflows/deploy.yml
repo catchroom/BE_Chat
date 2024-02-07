@@ -46,6 +46,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER_NAME }}
           key: ${{ secrets.PRIVATE_KEY }}
+          source: "./docker-compose.yml"
+          target: "/home/ubuntu"
           script: |
             sudo docker stop prod1
             sudo docker stop prod2
