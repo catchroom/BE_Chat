@@ -9,6 +9,7 @@ import com.catchroom.chat.message.repository.ChatRoomRedisRepository;
 import com.catchroom.chat.message.type.MessageType;
 import com.catchroom.chat.message.type.UserIdentity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class ChatService {
 
     /**
      * destination 정보에서 roomId 추출
+     * TODO 이거 필요??
      */
     public String getRoomId(String destination) {
         int lastIndex = destination.lastIndexOf('/');
@@ -44,34 +46,32 @@ public class ChatService {
         Long userId = chatMessage.getUserId();
         Long partnerId;
 
-        Long before = System.currentTimeMillis();
-
         // 1. 채팅방이 삭제되는 것이라면 delete 를 해준다.
         if (chatMessage.getType().equals(MessageType.DELETE)) {
             chatRoomService.deleteChatRoom(accessToken, chatMessage.getRoomId(), userId);
+            //TODO 레디스에서도 삭제 필요??
+            chatRoomRedisRepository.deleteChatRoom(userId,chatMessage.getRoomId());
         }
 
-        ChatRoomListGetResponse newChatRoomListResponse = null;
-        if (!chatRoomRedisRepository.existChatRoom(userId, chatMessage.getRoomId())) {
-            newChatRoomListResponse = chatRoomService.getChatRoomInfo(accessToken, chatMessage.getRoomId());
+        ChatRoomListGetResponse newChatRoomList = null;
+        if (chatRoomRedisRepository.existChatRoom(userId, chatMessage.getRoomId())) {
+            newChatRoomList = chatRoomRedisRepository.getChatRoom(userId, chatMessage.getRoomId());
         } else {
-            newChatRoomListResponse = chatRoomRedisRepository.getChatRoom(userId, chatMessage.getRoomId());
+            newChatRoomList = chatRoomService.getChatRoomInfo(accessToken, chatMessage.getRoomId());
         }
 
-        partnerId = getPartnerId(chatMessage, newChatRoomListResponse);
+        partnerId = getPartnerId(chatMessage, newChatRoomList);
 
         // 2. 채팅방 리스트에 새로운 채팅방 정보가 없다면, 넣어준다. 마지막 메시지도 같이 담는다. 상대방 레디스에도 업데이트 해준다.
-        setNewChatRoomInfo(chatMessage, newChatRoomListResponse);
+        setNewChatRoomInfo(chatMessage, newChatRoomList);
 
         // 3. 마지막 메시지들이 담긴 채팅방 리스트들을 가져온다. // 4. 파트너 채팅방 리스트도 가져온다. (파트너는 userId 로만)
         List<ChatRoomListGetResponse> chatRoomListGetResponseList = chatRoomService.getChatRoomList(userId, accessToken);
-        List<ChatRoomListGetResponse> partnerChatRoomGetResponseList = chatRoomService.getChatRoomListByUserId(partnerId);
-
+        List<ChatRoomListGetResponse> partnerChatRoomGetResponseList = getChatRoomListByUserId(partnerId);
 
         // 5. 마지막 메세지 기준으로 정렬 채팅방 리스트 정렬
         chatRoomListGetResponseList = chatRoomService.sortChatRoomListLatest(chatRoomListGetResponseList);
         partnerChatRoomGetResponseList = chatRoomService.sortChatRoomListLatest(partnerChatRoomGetResponseList);
-
 
         MessageSubDto messageSubDto = MessageSubDto.builder()
             .userId(userId)
@@ -80,9 +80,6 @@ public class ChatService {
             .list(chatRoomListGetResponseList)
             .partnerList(partnerChatRoomGetResponseList)
             .build();
-
-        Long after = System.currentTimeMillis() - before;
-        log.info("message Time : {}", after);
 
         redisPublisher.publish(messageSubDto);
     }
@@ -107,7 +104,6 @@ public class ChatService {
 
         newChatRoomListResponse.updateChatMessageDto(chatMessage);
 
-
         /** 상대방 채팅 리스트와 내 리스트 둘다 채팅방을 저장한다. */
 
         if (newChatRoomListResponse.getLoginUserIdentity().equals(UserIdentity.SELLER)) {
@@ -131,6 +127,21 @@ public class ChatService {
         //다시 원상태로 복귀
         newChatRoomListResponse.changePartnerInfo();
 
+    }
+
+    // redis에서 채팅방 리스트 불러오는 로직
+    private List<ChatRoomListGetResponse> getChatRoomListByUserId(Long userId) {
+        List<ChatRoomListGetResponse> chatRoomListGetResponseList = new ArrayList<>();
+
+        if (chatRoomRedisRepository.existChatRoomList(userId)) {
+            chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
+            for (ChatRoomListGetResponse chatRoomListGetResponse : chatRoomListGetResponseList) {
+                chatRoomService.setListChatLastMessage(chatRoomListGetResponse);
+            }
+        }
+
+
+        return chatRoomListGetResponseList;
     }
 
 

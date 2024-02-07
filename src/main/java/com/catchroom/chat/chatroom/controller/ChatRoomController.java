@@ -14,6 +14,8 @@ import java.util.List;
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
+    //TODO 같은게 2개..? getChatRoomList에 모든 정보가 다 담기는데 왜??
+
     @GetMapping("/list")
     public List<ChatRoomListGetResponse> getChatRoomList(
         @RequestHeader("Authorization") String accessToken,
@@ -30,7 +32,5 @@ public class ChatRoomController {
     ) {
         return chatRoomService.getChatRoomInfo(accessToken, roomId);
     }
-
-
 
 }

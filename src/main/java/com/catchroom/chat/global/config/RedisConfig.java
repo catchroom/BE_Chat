@@ -20,6 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    // yml 파일 redis 설정 불러오기
     private final RedisProperties redisProperties;
     /**
      * 단일 Topic 사용을 위한 Bean 설정
@@ -34,7 +35,7 @@ public class RedisConfig {
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
         lettuceConnectionFactory.setHostName(redisProperties.getHost());
         lettuceConnectionFactory.setPort(redisProperties.getPort());
-        lettuceConnectionFactory.setPassword(redisProperties.getPassword());
+//        lettuceConnectionFactory.setPassword(redisProperties.getPassword());
         return lettuceConnectionFactory;
     }
 
