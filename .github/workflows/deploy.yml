@@ -28,6 +28,8 @@ jobs:
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
           cat ./src/main/resources/application.yml
+          echo "${{ secrets.DOCKER-COMPOSE }}" > docker-compose.yml
+          cat docker-compose.yml
 
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
@@ -39,8 +41,6 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PWD }}
           docker buildx build --push --platform linux/amd64 -t ${{ secrets.DOCKER_IMAGE_NAME }} .
-#          docker build -t ${{ secrets.DOCKER_IMAGE_NAME }} .
-#          docker push ${{ secrets.DOCKER_IMAGE_NAME }}
 
       - name: Deploy
         uses: appleboy/ssh-action@master
@@ -49,10 +49,11 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            sudo docker image prune -af
+            sudo docker stop prod1
+            sudo docker stop prod2
             sudo docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
-            sudo docker stop chat-server-1
-            sudo docker run -d --rm --name chat-server-1 -p 8081:8080 ${{ secrets.DOCKER_IMAGE_NAME }}
-            sleep 10
-            sudo docker stop chat-server-2
-            sudo docker run -d --rm --name chat-server-2 -p 8082:8080 ${{ secrets.DOCKER_IMAGE_NAME }}
+            docker-compose up -d
+            sudo docker image prune -af
+#            sleep 10
+#            sudo docker stop chat-server-2
+#            sudo docker run -d --rm --name chat-server-2 -p 8082:8080 ${{ secrets.DOCKER_IMAGE_NAME }}
