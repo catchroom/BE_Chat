@@ -52,6 +52,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
     implementation 'org.springframework.boot:spring-boot-devtools'
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
 
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
