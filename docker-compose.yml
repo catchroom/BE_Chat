@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  prod1:
+    image: sungjiwoon/catchroom_chat:latest
+    container_name: prod1
+    ports:
+      - "8081:8081"
+    environment:
+      - PROFILES=prod1 # app1의 프로파일을 지정
+
+  prod2:
+    image: sungjiwoon/catchroom_chat:latest
+    container_name: prod2
+    ports:
+      - "8082:8082"
+    environment:
+      - PROFILES=prod2
