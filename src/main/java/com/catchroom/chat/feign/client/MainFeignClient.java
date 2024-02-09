@@ -1,6 +1,6 @@
 package com.catchroom.chat.feign.client;
 
-import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.chatroom.dto.ChatRoomGetResponse;
 import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.global.config.FeignConfig;
 import com.catchroom.chat.feign.dto.AccommodationResponse;
@@ -29,11 +29,11 @@ public interface MainFeignClient {
     @RequestMapping(method = RequestMethod.GET, value = "/accommodation/{accommodationId}")
     AccommodationResponse getAccommodationDto(@PathVariable Long accommodationId);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/chat/room/list/chat")
-    List<ChatRoomListGetResponse> getChatRoomList(@RequestHeader("Authorization") String accessToken);
+    @RequestMapping(method = RequestMethod.GET, value = "/chat/room/list/feign")
+    List<ChatRoomGetResponse> getChatRoomList(@RequestHeader("Authorization") String accessToken);
 
     @RequestMapping(method = RequestMethod.GET, value = "/chat/room/info")
-    ChatRoomListGetResponse getChatRoomInfo(
+    ChatRoomGetResponse getChatRoomInfo(
             @RequestHeader("Authorization") String accessToken,
             @RequestParam(name = "roomId") String roomId
     );

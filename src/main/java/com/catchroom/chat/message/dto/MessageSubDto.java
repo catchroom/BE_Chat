@@ -1,6 +1,6 @@
 package com.catchroom.chat.message.dto;
 
-import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.chatroom.dto.ChatRoomGetResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +15,6 @@ public class MessageSubDto implements Serializable {
     private Long userId;
     private Long partnerId;
     private ChatMessageDto chatMessageDto;
-    private List<ChatRoomListGetResponse> list;
-    private List<ChatRoomListGetResponse> partnerList;
+    private List<ChatRoomGetResponse> list;
+    private List<ChatRoomGetResponse> partnerList;
 }

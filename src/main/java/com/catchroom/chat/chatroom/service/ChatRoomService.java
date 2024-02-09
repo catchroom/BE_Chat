@@ -1,6 +1,6 @@
 package com.catchroom.chat.chatroom.service;
 
-import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.chatroom.dto.ChatRoomGetResponse;
 import com.catchroom.chat.feign.client.MainFeignClient;
 import com.catchroom.chat.global.common.SuccessMessage;
 import com.catchroom.chat.message.dto.ChatMessageDto;
@@ -23,27 +23,23 @@ public class ChatRoomService {
     private final ChatRoomRedisRepository chatRoomRedisRepository;
     private final ChatMongoService chatMongoService;
 
-    public ChatRoomListGetResponse getChatRoomInfo(String accessToken, String roomId) {
+    public ChatRoomGetResponse getChatRoomInfo(String accessToken, String roomId) {
         return mainFeignClient.getChatRoomInfo(accessToken, roomId);
     }
 
-    public List<ChatRoomListGetResponse> getChatRoomListByHttp(Long userId, String accessToken) {
+    public List<ChatRoomGetResponse> getChatRoomListByFeign(Long userId, String accessToken) {
         // 처음 HTTP 요청에서는 무조건 레디스 초기화 진행하도록 로직 수정
-        List<ChatRoomListGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
+        List<ChatRoomGetResponse> chatRoomListGetResponseList = mainFeignClient.getChatRoomList(accessToken);
         chatRoomListGetResponseList.forEach(this::setListChatLastMessage);
         chatRoomRedisRepository.initChatRoomList(userId, chatRoomListGetResponseList);
         return sortChatRoomListLatest(chatRoomListGetResponseList);
     }
 
+    public List<ChatRoomGetResponse> getChatRoomList(Long userId, String accessToken) {
 
-
-
-    public List<ChatRoomListGetResponse> getChatRoomList(Long userId, String accessToken) {
-
-        List<ChatRoomListGetResponse> chatRoomListGetResponseList = null;
+        List<ChatRoomGetResponse> chatRoomListGetResponseList = null;
         if (chatRoomRedisRepository.existChatRoomList(userId)) {
             chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
-
 
         } else {
             // 채팅방이 레디스에 없으면 페인 사용해서 불러온다!
@@ -56,16 +52,14 @@ public class ChatRoomService {
         return chatRoomListGetResponseList;
     }
 
-
     /**
      * 몽고 디비에서 마지막 메시지 가져와서 저장하는 로직
      * @param chatRoomListGetResponse
      */
-    public void setListChatLastMessage(ChatRoomListGetResponse chatRoomListGetResponse) {
+    public void setListChatLastMessage(ChatRoomGetResponse chatRoomListGetResponse) {
 
         // 몽고 디비에서 마지막 메시지 가져와서 저장.
         String chatRoomNumber = chatRoomListGetResponse.getChatRoomNumber();
-        //TODO 레디스에 마지막 메세지가 없으면??
         if (chatRoomRedisRepository.getLastMessage(chatRoomNumber) != null) {
             chatRoomListGetResponse.updateChatMessageDto(
                 chatRoomRedisRepository.getLastMessage(chatRoomNumber)
@@ -84,11 +78,11 @@ public class ChatRoomService {
      * 채팅방 마지막 메시지의 시간들을 비교하여 정렬하는 메소드
      * @param chatRoomListGetResponseList
      */
-    public List<ChatRoomListGetResponse> sortChatRoomListLatest (
-            List<ChatRoomListGetResponse> chatRoomListGetResponseList
+    public List<ChatRoomGetResponse> sortChatRoomListLatest (
+            List<ChatRoomGetResponse> chatRoomListGetResponseList
     ) {
-        List<ChatRoomListGetResponse> newChatRoomList = new ArrayList<>();
-        for (ChatRoomListGetResponse response : chatRoomListGetResponseList) {
+        List<ChatRoomGetResponse> newChatRoomList = new ArrayList<>();
+        for (ChatRoomGetResponse response : chatRoomListGetResponseList) {
             if (response.getLastChatmessageDto() != null) newChatRoomList.add(response);
         }
 

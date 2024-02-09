@@ -1,6 +1,6 @@
 package com.catchroom.chat.global.pubsub;
 
-import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.chatroom.dto.ChatRoomGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.catchroom.chat.message.dto.MessageSubDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,8 +48,8 @@ public class RedisSubscriber {
 
             ChatMessageDto chatMessage = dto.getChatMessageDto();
 
-            List<ChatRoomListGetResponse> chatRoomListGetResponseList = dto.getList();
-            List<ChatRoomListGetResponse> chatRoomListGetResponseListPartner = dto.getPartnerList();
+            List<ChatRoomGetResponse> chatRoomListGetResponseList = dto.getList();
+            List<ChatRoomGetResponse> chatRoomListGetResponseListPartner = dto.getPartnerList();
 
             Long userId = dto.getUserId();
             Long partnerId = dto.getPartnerId();

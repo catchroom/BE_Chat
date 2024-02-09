@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ChatRoomListGetResponse implements Serializable {
+public class ChatRoomGetResponse implements Serializable {
     private String chatRoomNumber;
 
     private Long buyerId;
