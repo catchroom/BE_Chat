@@ -1,6 +1,6 @@
 package com.catchroom.chat.message.repository;
 
-import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.chatroom.dto.ChatRoomGetResponse;
 import com.catchroom.chat.message.dto.ChatMessageDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +29,7 @@ public class ChatRoomRedisRepository {
     private final ObjectMapper objectMapper;
 
     @Resource(name = "redisTemplate")
-    private HashOperations<String, String, ChatRoomListGetResponse> opsHashChatRoom;
+    private HashOperations<String, String, ChatRoomGetResponse> opsHashChatRoom;
 
     @Resource(name = "redisTemplate")
     private HashOperations<String, String, ChatMessageDto> opsHashLastChatMessage;
@@ -43,19 +43,19 @@ public class ChatRoomRedisRepository {
         return redisTemplate.hasKey(getChatRoomKey(userId));
     }
 
-    public void initChatRoomList(Long userId, List<ChatRoomListGetResponse> list) {
+    public void initChatRoomList(Long userId, List<ChatRoomGetResponse> list) {
         if (redisTemplate.hasKey(getChatRoomKey(userId))) {
             redisTemplate.delete(getChatRoomKey(userId));
         }
 
         opsHashChatRoom = redisTemplate.opsForHash();
-        for (ChatRoomListGetResponse chatRoomListGetRes : list) {
+        for (ChatRoomGetResponse chatRoomListGetRes : list) {
             setChatRoom(userId, chatRoomListGetRes.getChatRoomNumber(), chatRoomListGetRes);
         }
 
     }
 
-    public void setChatRoom(Long userId, String roomId, ChatRoomListGetResponse response) {
+    public void setChatRoom(Long userId, String roomId, ChatRoomGetResponse response) {
         opsHashChatRoom.put(getChatRoomKey(userId), roomId, response);
     }
 
@@ -67,11 +67,11 @@ public class ChatRoomRedisRepository {
         opsHashChatRoom.delete(getChatRoomKey(userId), roomId);
     }
 
-    public ChatRoomListGetResponse getChatRoom(Long userId, String roomId) {
-        return objectMapper.convertValue(opsHashChatRoom.get(getChatRoomKey(userId), roomId), ChatRoomListGetResponse.class);
+    public ChatRoomGetResponse getChatRoom(Long userId, String roomId) {
+        return objectMapper.convertValue(opsHashChatRoom.get(getChatRoomKey(userId), roomId), ChatRoomGetResponse.class);
     }
 
-    public List<ChatRoomListGetResponse> getChatRoomList(Long userId) {
+    public List<ChatRoomGetResponse> getChatRoomList(Long userId) {
         return objectMapper.convertValue(opsHashChatRoom.values(getChatRoomKey(userId)), new TypeReference<>() {});
     }
 

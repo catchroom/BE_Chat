@@ -1,6 +1,6 @@
 package com.catchroom.chat.message.repository;
 
-import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.chatroom.dto.ChatRoomGetResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,8 @@ class ChatRoomRedisRepositoryTest {
     @Test
     void 채팅방_값이_제대로_저장됐을까() {
         Long userId = 10000L;
-        List<ChatRoomListGetResponse> chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
-        for (ChatRoomListGetResponse chatRoomListGetResponse : chatRoomListGetResponseList) {
+        List<ChatRoomGetResponse> chatRoomListGetResponseList = chatRoomRedisRepository.getChatRoomList(userId);
+        for (ChatRoomGetResponse chatRoomListGetResponse : chatRoomListGetResponseList) {
             log.info(
                     chatRoomListGetResponse.toString()
             );
@@ -39,7 +39,7 @@ class ChatRoomRedisRepositoryTest {
     @Test
     void 채팅방_값이_제대로_불러와질까() {
         Long userId = 10000L;
-        ChatRoomListGetResponse chatRoomListGetResponse = chatRoomRedisRepository.getChatRoom(userId, "c29cd80e-d289-49ff-ac91-f3b32dd4b633");
+        ChatRoomGetResponse chatRoomListGetResponse = chatRoomRedisRepository.getChatRoom(userId, "c29cd80e-d289-49ff-ac91-f3b32dd4b633");
         log.info(chatRoomListGetResponse.toString());
     }
 }

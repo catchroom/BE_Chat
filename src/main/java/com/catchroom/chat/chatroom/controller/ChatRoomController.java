@@ -1,6 +1,6 @@
 package com.catchroom.chat.chatroom.controller;
 
-import com.catchroom.chat.chatroom.dto.ChatRoomListGetResponse;
+import com.catchroom.chat.chatroom.dto.ChatRoomGetResponse;
 import com.catchroom.chat.chatroom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +17,16 @@ public class ChatRoomController {
     //TODO 같은게 2개..? getChatRoomList에 모든 정보가 다 담기는데 왜??
 
     @GetMapping("/list")
-    public List<ChatRoomListGetResponse> getChatRoomList(
+    public List<ChatRoomGetResponse> getChatRoomList(
         @RequestHeader("Authorization") String accessToken,
         @RequestParam(name = "userId") Long userId
     ) {
-        return chatRoomService.getChatRoomListByHttp(userId, accessToken);
+        return chatRoomService.getChatRoomListByFeign(userId, accessToken);
     }
 
 
     @GetMapping("/info")
-    public ChatRoomListGetResponse getChatRoom(
+    public ChatRoomGetResponse getChatRoom(
             @RequestHeader("Authorization") String accessToken,
             @RequestParam(name = "roomId") String roomId
     ) {
